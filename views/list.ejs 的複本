@@ -1,0 +1,116 @@
+<div style="position:fixed;top:75%;z-index:99;opacity:0.7;">
+	<div id="menubtn" class="ui black huge launch attached button menubtn">
+		<i class="icon list layout"></i>
+	</div>
+<% if (user) { %>
+	<div id="editbtn" class="ui green huge launch attached button editbtn">
+		<i class="edit icon"></i>
+	</div>
+<% } %>
+</div>
+
+<div id="menulist" class="ui large vertical sidebar menu inverted ">
+	<div class="active item black launch button menubtn">
+		<i class="list layout icon"></i> Menu
+	</div>
+<% if (!user) { %>
+	<a class="item black launch button" href="/login" >
+		<i class="layout sign in icon"></i>登入
+	</a>
+<% } else { %>
+	<a class="item black launch button" href="/logout" >
+		<i class="layout sign out icon"></i>登出
+	</a>
+<% } %>
+
+<% for(var id in navbar){ %>
+<% 		if(navbar[id].hide == "false") { %>
+<% 			if (url == navbar[id].url) { %>
+<% 				if(navbar[id].sub && navbar[id].sub.length > 0){ %>
+	<div class="active item">
+		<a href="/<%= navbar[id].url %>"><b><%= navbar[id].name %></b></a>
+		<div class="menu">
+<% 					for(var sub in navbar[id].sub){ %>
+<% 						if(navbar[id].sub[sub].hide == "false") { %>
+<% 							if(url == navbar[id].sub[sub].url) { %>
+			<a class="active item" href="/<%= navbar[id].sub[sub].url %>"><%= navbar[id].sub[sub].name %></a>
+<% 							} else { %>
+			<a class="item" href="/<%= navbar[id].sub[sub].url %>"><%= navbar[id].sub[sub].name %></a>
+<% 							} %>
+<% 						} %>
+<% 					} %>
+		</div>
+	</div>
+<% 				}else{ %>
+	<a class="active item" href="/<%= navbar[id].url %>">
+		<i class="dropdown icon"></i><%= navbar[id].name %>
+	</a>
+<% 				} %>
+<% 			} else { %>
+<% 				if(navbar[id].sub && navbar[id].sub.length > 0){ %>
+	<div class="item">
+		<a href="/<%= navbar[id].url %>"><b><%= navbar[id].name %></b></a>
+		<div class="menu">
+<% 					for(var sub in navbar[id].sub){ %>
+<% 						if(navbar[id].sub[sub].hide == "false") { %>
+<% 							if(url == navbar[id].sub[sub].url) { %>
+			<a class="active item" href="/<%= navbar[id].sub[sub].url %>"><%= navbar[id].sub[sub].name %></a>
+<% 							} else { %>
+			<a class="item" href="/<%= navbar[id].sub[sub].url %>"><%= navbar[id].sub[sub].name %></a>
+<% 							} %>
+<% 						} %>
+<% 					} %>
+		</div>
+	</div>
+<% 				}else{ %>
+	<a class="item" href="/<%= navbar[id].url %>">
+		<i class="dropdown icon"></i><%= navbar[id].name %>
+	</a>
+<% 				} %>
+<% 			} %>
+<% 		} %>
+<% } %>
+</div>
+
+<% if (user) { %>
+<div id="editmenu" class="ui top sidebar menu inverted">
+	<div class="active item black launch button menubtn">
+		<i class="list layout icon"></i>
+	</div>
+<% 		if (url != '/sys/list' && url != '/sys/chpwd' && url != '/sys/news' && url != '/sys/links' && url != '/sys/pages') { %>
+	<a class="item black launch button" onClick="edit();">
+		<i class="layout edit sign icon"></i>編輯
+	</a>
+	<a class="item black launch button" onClick="disedit();">
+		<i class="layout sign in icon"></i>瀏覽結果
+	</a>
+
+	<a class="item black launch button" onClick="save();">
+		<i class="layout save icon"></i>存檔
+	</a>
+	<a class="item black launch button" onClick="back();">
+		<i class="layout sign in icon"></i>還原
+	</a>
+<% 		} %>
+	<a href="/sys/list" class="item black launch button">
+		<i class="layout edit sign icon"></i>選單
+	</a>
+	<a href="/sys/pages" class="item black launch button">
+		<i class="layout edit sign icon"></i>頁面
+	</a>
+	<a href="/sys/news" class="item black launch button">
+		<i class="layout edit sign icon"></i>最新消息
+	</a>
+	<a href="/sys/links" class="item black launch button">
+		<i class="layout edit sign icon"></i>快速連結
+	</a>
+	
+	<a href="/sys/chpwd" class="item black launch button">
+		<i class="layout user icon"></i>更改密碼
+	</a>
+	
+	<a href="/logout" class="item black launch button">
+		<i class="layout sign out icon"></i>登出
+	</a>
+</div>
+<% } %>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<title><%= it.sname + ' - login' %></title>
+	<link rel="stylesheet" type="text/css" href="/public/css/semantic.min.css">
+	<link rel="stylesheet" type="text/css" href="/public/css/jquery.sidr.light.css">
+	<link rel="stylesheet" type="text/css" href="/public/css/main.css">
+	<link rel="stylesheet" type="text/css" href="/api?css=<%= it.url %>">
+	<script src="/public/js/jquery-2.1.3.min.js"></script>
+	<script src="/public/js/semantic.min.js"></script>
+	<script src="/public/js/jquery.sidr.min.js"></script>
+	<script src="/public/js/main.js"></script>
+<body>
+<%#def.loadfile('./list.ejs') %>
+<div>
+	<div class="ui segment">
+		<div class="ui form column">
+			<div class="ui segment">
+				<div class="field">
+					<label>Username</label>
+					<div class="ui left labeled icon input">
+						<input name="name" type="text" placeholder="Username">
+						<i class="user icon"></i>
+						<div class="ui corner label">
+							<i class="icon asterisk"></i>
+						</div>
+					</div>
+				</div>
+				<div class="field">
+					<label>Password</label>
+					<div class="ui left labeled icon input">
+						<input name="pwd" type="password">
+						<i class="lock icon"></i>
+						<div class="ui corner label">
+							<i class="icon asterisk"></i>
+						</div>
+					</div>
+				</div>
+				<div class="ui error message">
+					<div class="header">We noticed some issues</div>
+				</div>
+				<button class="ui blue submit button" type="submit">Login</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="show" class="ui modal">
+  <i class="close icon"></i>
+  <div class="header">
+  </div>
+  <div class="content">
+  </div>
+</div>
+</body>
+<script>
+$('button[type=submit]').on('click', function(e){
+	var name = $('input[name=name]').val();
+	var pwd = $('input[name=pwd]').val();
+	console.log(name, pwd);
+	$.ajax({
+		type: "POST",
+		url: "/login",
+		data: { name: name, pwd: pwd },
+		success: function(data) {
+			console.log(data);
+			if(data == 'ok'){
+				window.location.pathname = '/';
+			}else{
+				
+			}
+		}
+	});
+});
+</script>
+</html>

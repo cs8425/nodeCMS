@@ -1,0 +1,11 @@
+<% if(typeof it.news != 'undefined'){ %>
+<% 		if(it.news.length){ %>
+<div class="ui raised segment">
+<% 			for(var id in it.news){ %>
+<% 				if(it.news[id].hide == "false") { %>
+		<div class="ui teal ribbon label news" data="<%= it.news[id].data %>"><%= it.news[id].title %></div><p></p>
+<%				} %>
+<% 			} %>
+</div>
+<% 		} %>
+<% } %>

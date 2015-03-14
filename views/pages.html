@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Standard Meta -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title><%= sname %> - 設定</title>
+
+  <link rel="stylesheet" type="text/css" href="/public/css/semantic.css">
+
+  <script src="/public/js/jquery-1.11.1.js"></script>
+  <script src="/public/js/jquery.address.js"></script>
+  <script src="/public/js/semantic.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="/public/css/main.css">
+  <script src="/public/js/main.js"></script>
+</head>
+<body>
+<% include list %>
+<form id="data2" method="post">
+	<div class="ui segment">
+		<div class="ui form column">
+			<div class="ui segment">
+<table class="ui five column table segment">
+	<thead>
+		<tr><th><div class="circular ui button green" onClick="javascript:add();"><i class="add sign icon"></i>新增</div></th>
+		<th>title</th>
+		<th>隱藏</th>
+		<th>url</th>
+	</tr></thead>
+	<tbody id="data-list">
+	</tbody>
+</table>
+			<button type="button" class="ui button blue" onClick="savelist();"><i class="layout save icon"></i>存檔</button>
+			</div>
+		</div>
+	</div>
+</form>
+<div id="show" class="ui modal">
+  <i class="close icon"></i>
+  <div class="header">
+  </div>
+  <div class="content">
+  </div>
+</div>
+</body>
+<% include loginscript %>
+<script src="/public/js/jquery.tablednd.js"></script>
+<!-- <script src="/public/js/jquery-sortable-min.js"></script> -->
+<script type="text/javascript">
+var next_id = 0;
+var url2page = {};
+var data = {};
+data.sub = <%- data %>;
+
+
+
+var data2table = function (data){
+	var html = '';
+	for(var i in data){
+		data[i].id = i;
+		//console.log(i, data[i], data[i].url);
+html += '	<tr id="' + i + '">'
+
+		if(data[i].url == 'index'){
+html += '		<td class="dragHandle"><div class="circular ui button red disabled"><i class="remove icon"></i>刪除</div></td>'
+		}else{
+html += '		<td class="dragHandle"><div class="circular ui button red" onClick="javascript:rm(this);"><i class="remove icon"></i>刪除</div></td>'
+		}
+
+html += '		<td><input type="text" value="' + data[i].title + '" style="width:100%"></td>'
+
+		if(data[i].hide == 'true'){
+html += '		<td><div class="ui toggle checkbox"><input type="checkbox" checked><label></label></div></td>'
+		}else{
+html += '		<td><div class="ui toggle checkbox"><input type="checkbox"><label></label></div></td>'
+		}
+
+		if(data[i].url == 'index'){
+html += '		<td><input type="text" value="' + data[i].url + '" style="width:100%" disabled>'
+		}else{
+html += '		<td><input type="text" value="' + data[i].url + '" style="width:100%" >'
+		}
+html += '		<input type="hidden" value="' + i + '"></td>';
+html += '	</tr>'
+	}
+	//console.log(html);
+	next_id = parseInt(i) + 1;
+	return html;
+}
+$j('#data-list').html(data2table(data.sub));
+$j('.ui.checkbox').checkbox();
+
+var table2data = function (table, node){
+	var data = {};
+	var rows = $j(table).find('tr').toArray();
+	for(var i in rows){
+		var row = $j(rows[i]).find('td input').toArray();
+		var title = row[0].value;
+		var hide = row[1].checked;
+		var url = row[2].value;
+		var id = row[3].value;
+
+		var ele = {
+			"url": url,
+            "title": title,
+            "hide": hide + ""
+		};
+		if(node.sub[id] && node.sub[id].data){
+			ele.data = node.sub[id].data;
+		}
+		//console.log(i, rows[i], name, hide, url, title, ele);
+		data[id] = ele;
+		url2page[url] = id;
+	}
+	//console.log(data);
+	return data;
+}
+
+function sortable() {
+	$j('#data-list').tableDnD({
+		onDrop: function(table, row) {
+			console.log(table, row);
+			//getcurr().sub = table2data($j('#data-list'), getcurr());
+		},
+		dragHandle: ".dragHandle"
+	});
+	$j('.ui.checkbox').checkbox();
+}
+$j(document).ready(function() {
+	sortable();
+});
+		function add() {
+			var i = next_id;
+			var d = '';
+d += '	<tr id="' + i + '">'
+d += '		<td class="dragHandle"><div class="circular ui button red" onClick="javascript:rm(this);"><i class="remove icon"></i>刪除</div></td>'
+d += '		<td><input type="text" value="" style="width:100%"></td>'
+d += '		<td><div class="ui toggle checkbox"><input type="checkbox"><label></label></div></td>'
+d += '		<td><input type="text" value="" style="width:100%">'
+d += '		<input type="hidden" value="' + i + '"></td>';
+d += '	</tr>'
+			$j('#data-list').append(d);
+			sortable();
+			next_id++;
+			data.sub = table2data($j('#data-list'), data);
+		}
+		function rm(a) {
+			$j(a).parent().parent().remove();
+			data.sub = table2data($j('#data-list'), data);
+		}
+
+		function savelist() {
+			data.sub = table2data($j('#data-list'), data);
+			$j.ajax({
+				type: "POST",
+				url: window.location.pathname,
+				dataType: "json",
+				data: {url2page: url2page, pages: JSON.stringify(data.sub)},
+				async: false,
+				success: function(data) {
+					console.log(data);
+					//alert(data.status);
+					$j('#show .header').text('回應');
+					$j('#show .content').html(data.status);
+					$j('#show').modal('show');
+				}
+			});
+		}
+	</script>
+</html>

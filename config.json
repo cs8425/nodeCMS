@@ -1,0 +1,6 @@
+{
+    "port": 80,
+    "sslport": 443,
+    "process_user": 1000,
+    "process_group": 1000
+}

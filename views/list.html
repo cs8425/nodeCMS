@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Standard Meta -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title><%= sname %> - 設定</title>
+
+  <link rel="stylesheet" type="text/css" href="/public/css/semantic.css">
+
+  <script src="/public/js/jquery-1.11.1.js"></script>
+  <script src="/public/js/jquery.address.js"></script>
+  <script src="/public/js/semantic.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="/public/css/main.css">
+  <script src="/public/js/main.js"></script>
+</head>
+<body>
+<% include list %>
+<form id="data" method="post">
+	<div class="ui segment">
+		<div class="ui form column">
+			<div class="ui segment">
+				<div class="field">
+					<label>Title</label>
+					<div class="ui left labeled icon input">
+						<input id="title" name="title" type="text" value="<%= name %>">
+						<i class="info icon"></i>
+						<div class="ui corner label">
+							<i class="icon asterisk"></i>
+						</div>
+					</div>
+				</div>
+				<div class="field">
+					<label>縮寫Title</label>
+					<div class="ui left labeled icon input">
+						<input id="stitle" name="stitle" type="text" value="<%= sname %>">
+						<i class="info icon"></i>
+						<div class="ui corner label">
+							<i class="icon asterisk"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<form id="data2" method="post">
+	<div class="ui segment">
+<div id="path" class="ui breadcrumb">
+	<i class="right arrow icon divider"></i>
+</div>
+<div class="circular ui button" onClick="javascript:goback();"><i class="left arrow icon divider"></i>上一層</div>
+		<div class="ui form column">
+			<div class="ui segment">
+<table class="ui five column table segment">
+	<thead>
+		<tr><th><div class="circular ui button green" onClick="javascript:add();"><i class="add sign icon"></i>新增</div></th>
+		<th>連結名稱</th>
+		<th>隱藏</th>
+		<th>url</th>
+		<th>子連結</th>
+	</tr></thead>
+	<tbody id="data-list">
+	</tbody>
+</table>
+			<button type="button" class="ui button blue" onClick="savelist();"><i class="layout save icon"></i>存檔</button>
+			</div>
+		</div>
+	</div>
+</form>
+<div id="show" class="ui modal">
+  <i class="close icon"></i>
+  <div class="header">
+  </div>
+  <div class="content">
+  </div>
+</div>
+</body>
+<% include loginscript %>
+<script src="/public/js/jquery.tablednd.js"></script>
+<!-- <script src="/public/js/jquery-sortable-min.js"></script> -->
+<script type="text/javascript">
+var path = [];
+var data = {};
+data.sub = <%- data %>;
+
+
+var goin2 = function (name){
+	console.log( table2data($j('#data-list'), getcurr()));
+	getcurr().sub = table2data($j('#data-list'), getcurr());
+	var tmp = getcurr().sub;
+	for(var i in tmp){
+		if(tmp[i].name == name){
+			path.push(name);
+			$j('#data-list').html(data2table(getcurr().sub));
+			sortable();
+			showpath();
+			break;
+		}
+	}
+}
+var goback = function (){
+	if(path.length){
+		getcurr().sub = table2data($j('#data-list'), getcurr());
+		path.pop();
+		showpath();
+		$j('#data-list').html(data2table(getcurr().sub));
+		sortable();
+	}
+}
+
+var __curr = function (node, i){
+	if(path[i]){
+		for(var j in node.sub){
+			if(node.sub[j].name == path[i]){
+				return __curr(node.sub[j], i+1);
+			}
+		}
+	}else{
+		return node;
+	}
+}
+
+var getcurr = function (){
+	return __curr(data, 0);
+}
+
+var showpath = function (){
+	var html = '<i class="right arrow icon divider"></i>';
+	for(var i in path){
+		if(i > 0) html += '<i class="right arrow icon divider"></i>';
+		html += '<a class="section">'+ path[i] +'</a>';
+	}
+	$j('#path').html(html);
+}
+
+var data2table = function (data){
+	var html = '';
+	for(var i in data){
+		data[i].id = i;
+		//console.log(i, data[i], data[i].url);
+html += '	<tr id="' + i + '">'
+
+		if(data[i].url == 'index'){
+html += '		<td class="dragHandle"><div class="circular ui button red disabled"><i class="remove icon"></i>刪除</div></td>'
+		}else{
+html += '		<td class="dragHandle"><div class="circular ui button red" onClick="javascript:rm(this);"><i class="remove icon"></i>刪除</div></td>'
+		}
+
+html += '		<td><input type="text" value="' + data[i].name + '" style="width:100%"></td>'
+
+		if(data[i].hide == 'true'){
+html += '		<td><div class="ui toggle checkbox"><input type="checkbox" checked><label></label></div></td>'
+		}else{
+html += '		<td><div class="ui toggle checkbox"><input type="checkbox"><label></label></div></td>'
+		}
+
+		if(data[i].url == 'index'){
+html += '		<td><input type="text" value="' + data[i].url + '" style="width:100%" disabled></td>'
+		}else{
+html += '		<td><input type="text" value="' + data[i].url + '" style="width:100%" ></td>'
+		}
+
+		if(data[i].url != 'index'){
+		//if((data[i].sub)&&(data[i].sub.length)){
+html += '				<td><div class="circular ui button teal" onClick="javascript:go(this);">編輯</div>'
+		}else{
+html += '				<td><div class="circular ui button teal disabled" >編輯</div>'
+		}
+html += '		<input type="hidden" value="' + i + '"></td>';
+html += '	</tr>'
+	}
+	//console.log(html);
+	return html;
+}
+$j('#data-list').html(data2table(data.sub));
+$j('.ui.checkbox').checkbox();
+
+var table2data = function (table, node){
+	var data = [];
+	var rows = $j(table).find('tr').toArray();
+	for(var i in rows){
+		var row = $j(rows[i]).find('td input').toArray();
+		var name = row[0].value;
+		var hide = row[1].checked;
+		var url = row[2].value;
+		var id = row[3].value;
+
+		var ele = {
+			"url": url,
+            "name": name,
+            "hide": hide + "",
+			"id": id + "",
+			"sub": []
+		};
+		for(var j in node.sub){
+			if(node.sub[j].id == id){
+				ele.sub = node.sub[j].sub;
+			}
+		}
+		//console.log(i, rows[i], name, hide, url, title, ele);
+		data.push(ele);
+	}
+	//console.log(data);
+	return data;
+}
+
+		function sortable() {
+			$j('#data-list').tableDnD({
+				onDrop: function(table, row) {
+					console.log(table, row);
+					getcurr().sub = table2data($j('#data-list'), getcurr());
+				},
+				dragHandle: ".dragHandle"
+			});
+			$j('.ui.checkbox').checkbox();
+		}
+		$j(document).ready(function() {
+			sortable();
+		});
+		function add() {
+			var id = getcurr().sub.length;
+			var d = '';
+d += '	<tr id="' + id + '">'
+d += '		<td class="dragHandle"><div class="circular ui button red" onClick="javascript:rm(this);"><i class="remove icon"></i>刪除</div></td>'
+d += '		<td><input type="text" value="" style="width:100%"></td>'
+d += '		<td><div class="ui toggle checkbox"><input type="checkbox"><label></label></div></td>'
+d += '		<td><input type="text" value="" style="width:100%"></td>'
+d += '				<td><div class="circular ui button teal" onClick="javascript:return false;">編輯</div><input type="hidden" value="' + id + '"></td>'
+d += '	</tr>'
+			$j('#data-list').append(d);
+			sortable();
+			getcurr().sub = table2data($j('#data-list'), getcurr());
+		}
+		function rm(a) {
+			$j(a).parent().parent().remove();
+			getcurr().sub = table2data($j('#data-list'), getcurr());
+		}
+		function go(a) {
+			var tr = $j(a).parent().parent();
+			var td = $j(tr).find('td input').toArray();
+			var name = td[0].value;
+			var hide = td[1].checked;
+			var url = td[2].value;
+			var id = td[3].value;
+			goin2(name);
+		}
+		function savelist() {
+			getcurr().sub = table2data($j('#data-list'), getcurr());
+			$j.ajax({
+				type: "POST",
+				url: window.location.pathname,
+				dataType: "json",
+				data: { title: $j('#title').val(), stitle: $j('#stitle').val(), nav: data.sub },
+				//data: { title: $j('#title').val(), stitle: $j('#stitle').val(), nav: JSON.stringify(data.sub) },
+				async: false,
+				success: function(data) {
+					console.log(data);
+					//alert(data.status);
+					$j('#show .header').text('回應');
+					$j('#show .content').html(data.status);
+					$j('#show').modal('show');
+				}
+			});
+		}
+	</script>
+</html>

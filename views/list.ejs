@@ -1,0 +1,79 @@
+<div style="position:fixed;top:75%;z-index:99;opacity:0.7;">
+	<a id="menubtn" href="#sidr" class="ui black huge launch attached button menubtn">
+		<i class="icon list layout"></i>
+	</a>
+<% if (it.user) { %>
+	<div id="editbtn" class="ui green huge launch attached button editbtn">
+		<i class="edit icon"></i>
+	</div>
+<% } %>
+</div>
+
+<div id="sidr" class="sidr left">
+	<ul>
+		<li class="active"><div><i class="list layout icon"></i> Menu</div>
+		</li>
+<% if (!it.user) { %>
+		<li><a class="item black launch button" href="/login" >
+			<i class="layout sign in icon"></i>登入
+		</a></li>
+<% } else { %>
+		<li><a class="item black launch button" href="/logout" >
+			<i class="layout sign out icon"></i>登出
+		</a></li>
+<% } %>
+<% for(var id in it.navbar){ %>
+<% 		if(it.navbar[id].hide == "false") { %>
+<% 			if (it.url == it.navbar[id].url) { %>
+<% 				if(it.navbar[id].sub && it.navbar[id].sub.length > 0){ %>
+	<li class="active">
+		<a href="/<%= it.navbar[id].url %>"><b><%= it.navbar[id].name %></b><i class="dropdown icon"></i></a>
+		<ul>
+<% 					for(var sub in it.navbar[id].sub){ %>
+<% 						if(it.navbar[id].sub[sub].hide == "false") { %>
+<% 							if(it.url == it.navbar[id].sub[sub].url) { %>
+			<li class="active"><a href="/<%= it.navbar[id].sub[sub].url %>"><%= it.navbar[id].sub[sub].name %></a></li>
+<% 							} else { %>
+			<li><a href="/<%= it.navbar[id].sub[sub].url %>"><%= it.navbar[id].sub[sub].name %></a></li>
+<% 							} %>
+<% 						} %>
+<% 					} %>
+		</ul>
+	</li>
+<% 				}else{ %>
+	<li class="active">
+		<a href="/<%= it.navbar[id].url %>">
+			<b><%= it.navbar[id].name %></b>
+		</a>
+	</li>
+<% 				} %>
+<% 			} else { %>
+<% 				if(it.navbar[id].sub && it.navbar[id].sub.length > 0){ %>
+	<li>
+		<a href="/<%= it.navbar[id].url %>"><b><%= it.navbar[id].name %></b><i class="dropdown icon"></i></a>
+		<ul>
+<% 					for(var sub in it.navbar[id].sub){ %>
+<% 						if(it.navbar[id].sub[sub].hide == "false") { %>
+<% 							if(it.url == it.navbar[id].sub[sub].url) { %>
+			<li class="active"><a href="/<%= it.navbar[id].sub[sub].url %>"><%= it.navbar[id].sub[sub].name %></a></li>
+<% 							} else { %>
+			<li><a href="/<%= it.navbar[id].sub[sub].url %>"><%= it.navbar[id].sub[sub].name %></a></li>
+<% 							} %>
+<% 						} %>
+<% 					} %>
+		</ul>
+	</li>
+<% 				}else{ %>
+	<li>
+		<a href="/<%= it.navbar[id].url %>">
+			<b><%= it.navbar[id].name %></b>
+		</a>
+	</li>
+<% 				} %>
+<% 			} %>
+<% 		} %>
+<% } %>
+
+	</ul>
+</div>
+

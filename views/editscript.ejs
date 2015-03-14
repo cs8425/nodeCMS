@@ -1,0 +1,84 @@
+<% if ((it.user) && (it.url != '/sys/list' && it.url != '/sys/chpwd' && it.url != '/sys/news' && it.url != '/sys/links' && it.url != '/sys/pages')) { %>
+<!--<div id="editor" class="ui segment" style="position: fixed;height:90%;top:0;  width: 100%;">
+	<div class="actions">
+		<div class="ui button">Cancel</div>
+		<div class="ui button">OK</div>
+	</div>
+
+</div>-->
+
+<div id="qqq" class="ui page dimmer" style="text-align:left">
+	<div class="actions">
+		<div class="ui button">Cancel</div>
+		<div class="ui button">OK</div>
+	</div>
+	<div class="content" style="height: 90%;margin: 10px;">
+		<div id="in" class="description" style="height: 100%;margin: 10px;"></div>
+	</div>
+</div>
+	<script src="/public/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+	$('#qqq').dimmer();
+		$('#in').text($('#main').html());
+		var editor = ace.edit("in");
+		//editor.setTheme("ace/theme/textmate");
+		//editor.setTheme("ace/theme/twilight");
+		//editor.setTheme("ace/theme/terminal");
+		//editor.setTheme("ace/theme/monokai");
+		//editor.getSession().setMode("ace/mode/markdown");
+		editor.getSession().setMode("ace/mode/html");
+		editor.getSession().setTabSize(8);
+		editor.getSession().setUseWrapMode(true);
+		editor.$blockScrolling = Infinity;
+		/*editor.getSession().on('change', function(e) {
+			//console.log(e);
+			clearTimeout(t);
+			t = setTimeout(function() {
+				var val = editor.getValue();
+				var ouput = document.getElementById('out');
+				ouput.innerHTML = marked(val);
+				MathJax.Hub.Queue(["Typeset",MathJax.Hub, "out"]);
+				list = $('#out>[data-line]');
+				list2 = $('#out>:header[data-line]');
+			}, 1000);
+		});*/
+		var page = '';
+		function edit() {
+			//Aloha.jQuery('#main').aloha();
+			page = $('#main').html();
+			$('#save').removeClass('disabled');
+			$('#back').removeClass('disabled');
+		}
+		function disedit() {
+			//Aloha.jQuery('#main').mahalo();
+			$('#save').addClass('disabled');
+			$('#back').addClass('disabled');
+		}
+		function back() {
+			if(!$('#back').hasClass('disabled')){
+				$('#main').html(page);
+			}
+		}
+		function save() {
+			if(!$('#save').hasClass('disabled')){
+				$.ajax({
+					type: "POST",
+					url: "/api?save=<%= it.url %>",
+					dataType: "json",
+					data: { html: $('#main').html() },
+					async: false,
+					success: function(data) {
+						console.log(data);
+						$('#show .header').text('回應');
+						$('#show .content').html(data.status);
+						$('#show').modal('show');
+					}
+				});
+			}
+		}
+
+	</script>
+
+
+
+<% } %>

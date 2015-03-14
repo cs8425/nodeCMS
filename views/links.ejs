@@ -1,0 +1,29 @@
+<% if(typeof it.links != 'undefined'){ %>
+<% 		if(it.links.length){ %>
+<div class="ui segment">
+	<div class="ui relaxed divided list">
+<% 			for(var id in it.links){ %>
+<% 				if(it.links[id].hide == "false") { %>
+<% 					if(it.links[id].link == ""){ %>
+	<div class="item">
+		<div class="content">
+			<div class="header"><%= it.links[id].title %></div>
+			<%= it.links[id].data %>
+		</div>
+	</div>
+<% 					}else{ %>
+	<a href="<%= it.links[id].link %>" class="item">
+		<div class="item">
+			<div class="content">
+				<div class="header"><%= it.links[id].title %></div>
+				<%= it.links[id].data %>
+			</div>
+		</div>
+	</a>
+<% 					} %>
+<%				} %>
+<% 			} %>
+	</div>
+</div>
+<% 		} %>
+<% } %>

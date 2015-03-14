@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<title><%= it.sname + ' - ' + it.data.title %></title>
+	<link rel="stylesheet" type="text/css" href="/public/css/semantic.min.css">
+	<link rel="stylesheet" type="text/css" href="/public/css/jquery.sidr.light.css">
+	<link rel="stylesheet" type="text/css" href="/api?css">
+	<link rel="stylesheet" type="text/css" href="/api?css=<%= it.url %>">
+	<script src="/public/js/jquery-2.1.3.min.js"></script>
+	<script src="/public/js/semantic.min.js"></script>
+	<script src="/public/js/jquery.sidr.min.js"></script>
+	<script src="/public/js/main.js"></script>
+
+<body>
+<%#def.loadfile('./list.ejs') %>
+<div class="container">
+	<div class="ui grid">
+<% if(it.url == 'index') { %>
+		<div id="grid" class="thirteen wide column">
+<% } else { %>
+		<div id="grid" class="sixteen wide column">
+<% } %>
+				<div id="main" class="ui piled segment">
+<% if(typeof it.data.data != 'undefined') { %>
+<%- it.data.data %>
+<% }else{ %>
+					<h1>A header</h1>
+					<p>Te eum doming eirmod, nominati pertinacia argumentum ad his. Ex eam alia facete scriptorem, est autem aliquip detraxit at. Usu ocurreret referrentur at, cu epicurei appellantur vix. Cum ea laoreet recteque electram, eos choro alterum definiebas in. Vim dolorum definiebas an. Mei ex natum rebum iisque.</p>
+					<p>Audiam quaerendum eu sea, pro omittam definiebas ex. Te est latine definitiones. Quot wisi nulla ex duo. Vis sint solet expetenda ne, his te phaedrum referrentur consectetuer. Id vix fabulas oporteat, ei quo vide phaedrum, vim vivendum maiestatis in.</p>
+					<p>Eu quo homero blandit intellegebat. Incorrupte consequuntur mei id. Mei ut facer dolores adolescens, no illum aperiri quo, usu odio brute at. Qui te porro electram, ea dico facete utroque quo. Populo quodsi te eam, wisi everti eos ex, eum elitr altera utamur at. Quodsi convenire mnesarchum eu per, quas minimum postulant per id.</p>
+<% } %>
+				</div>
+
+		</div>
+<% if(it.url == 'index') { %>
+		<div id="aaa" class="three wide column">
+<%#def.loadfile('./news.ejs') %>
+
+<%#def.loadfile('./links.ejs') %>
+		</div>
+<% } %>
+	</div>
+</div>
+
+<div id="show" class="ui modal">
+  <i class="close icon"></i>
+  <div class="header">
+  </div>
+  <div class="content">
+  </div>
+</div>
+  
+  
+</body>
+<% if(it.url == 'index') { %>
+<script>
+
+function resize(){
+	var width = $(window).width();
+	var height = $(document).height();
+
+	if(width < 890){
+		$('#aaa').hide();
+		$('#grid').removeClass('wide').removeClass('thirteen').removeClass('sixteen').addClass('sixteen').addClass('wide');
+	}else{
+		$('#aaa').show();
+		$('#grid').removeClass('wide').removeClass('thirteen').removeClass('sixteen').addClass('thirteen').addClass('wide');
+	}
+
+}
+resize();
+$(window).unbind('resize').bind('resize', resize);
+$('#aaa .news').bind('click', function(e){
+	var ele = $(this);
+console.log(e, $(this).attr('data'), $(this).text());
+	$('#show .header').text(ele.text());
+	$('#show .content').html(ele.attr('data'));
+	$('#show').modal('show');
+});
+</script>
+<% } %>
+
+<%#def.loadfile('./loginscript.ejs') %>
+<%#def.loadfile('./editscript.ejs') %>
+</html>

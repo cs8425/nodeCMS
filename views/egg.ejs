@@ -1,0 +1,645 @@
+
+	<div id="eggModal" style="background-color:#000;width:100%;height:auto;display:none;position:absolute;top:0;left:0;bottom:0;z-index:10000">
+		<div id="container" style="position:absolute;">
+			<div id="asd" style="position:absolute;width:100%;z-index:10001;text-align:center;color:#fff;">123</div>
+		</div>
+	</div>
+
+	<script src="/public/js/three/three.min.js"></script>
+
+	<script src="/public/js/three/tween.min.js"></script>
+	<script src="/public/js/three/Sparks.js"></script>
+
+	<script src="/public/js/three/CopyShader.js"></script>
+	<script src="/public/js/three/FilmShader.js"></script>
+	<script src="/public/js/three/FocusShader.js"></script>
+	<script src="/public/js/three/HorizontalBlurShader.js"></script>
+	<script src="/public/js/three/TriangleBlurShader.js"></script>
+	<script src="/public/js/three/VerticalBlurShader.js"></script>
+
+	<script src="/public/js/three/EffectComposer.js"></script>
+	<script src="/public/js/three/RenderPass.js"></script>
+	<script src="/public/js/three/ShaderPass.js"></script>
+	<script src="/public/js/three/MaskPass.js"></script>
+	<script src="/public/js/three/BloomPass.js"></script>
+	<script src="/public/js/three/FilmPass.js"></script>
+	<script src="/public/js/three/FilmPass.js"></script>
+
+	<script type="x-shader/x-vertex" id="vertexshader">
+		attribute float size;
+		attribute vec3 pcolor;
+		varying vec3 vColor;
+		void main() {
+			vColor = pcolor;
+			vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+			gl_PointSize = size * ( 200.0 / length( mvPosition.xyz ) );
+			gl_Position = projectionMatrix * mvPosition;
+		}
+	</script>
+	<script type="x-shader/x-fragment" id="fragmentshader">
+		uniform sampler2D texture;
+		varying vec3 vColor;
+		void main() {
+			vec4 outColor = texture2D( texture, gl_PointCoord );
+			gl_FragColor = outColor * vec4( vColor, 1.0 );
+		}
+	</script>
+<script>
+if (_typeface_js && _typeface_js.loadFace) _typeface_js.loadFace({"familyName":"WenQuanYi Zen Hei","lineHeight":"1809","underlineThickness":"51","descender":"-348","resolution":"1000","cssFontStyle":"normal","underlinePosition":"-230","ascender":"1338","cssFontWeight":"normal","boundingBox":{"yMin":"-347","xMin":"-175","yMax":"1337","xMax":"1460"},"glyphs":{"\u674e":{"x_min":"5","x_max":"1327","ha":"1389","o":"m 1326 255 q 1326 122 1318 188 q 941 132 1133 132 l 709 132 l 709 -48 q 648 -174 708 -141 q 488 -202 584 -210 l 461 -202 q 453 -55 465 -128 q 529 -67 520 -67 q 547 -69 538 -67 q 562 -70 556 -70 q 575 -70 568 -70 q 587 -56 587 -69 l 587 132 l 164 132 q 48 122 105 132 q 48 255 56 188 q 164 244 105 244 l 587 244 l 587 335 l 760 454 l 432 454 q 317 443 374 454 q 317 577 324 511 q 432 567 374 567 l 1006 567 l 1011 450 q 925 419 964 444 l 709 271 l 709 244 l 941 244 q 1326 255 1133 244 m 63 562 q 5 676 44 626 q 504 922 306 741 l 155 922 q 52 912 104 922 q 52 1018 59 965 q 155 1010 104 1010 l 622 1010 q 610 1155 625 1086 q 752 1155 680 1148 q 740 1010 737 1086 l 941 1010 q 1323 1018 1132 1010 q 1323 912 1317 965 q 941 922 1132 922 l 792 922 l 998 823 l 1266 682 l 1189 606 l 925 744 l 740 832 q 752 567 736 694 q 610 567 682 573 q 622 858 626 706 q 438 735 548 804 q 63 562 263 619 ","cached_outline":["m","1326","255","q","1326","122","1318","188","q","941","132","1133","132","l","709","132","l","709","-48","q","648","-174","708","-141","q","488","-202","584","-210","l","461","-202","q","453","-55","465","-128","q","529","-67","520","-67","q","547","-69","538","-67","q","562","-70","556","-70","q","575","-70","568","-70","q","587","-56","587","-69","l","587","132","l","164","132","q","48","122","105","132","q","48","255","56","188","q","164","244","105","244","l","587","244","l","587","335","l","760","454","l","432","454","q","317","443","374","454","q","317","577","324","511","q","432","567","374","567","l","1006","567","l","1011","450","q","925","419","964","444","l","709","271","l","709","244","l","941","244","q","1326","255","1133","244","m","63","562","q","5","676","44","626","q","504","922","306","741","l","155","922","q","52","912","104","922","q","52","1018","59","965","q","155","1010","104","1010","l","622","1010","q","610","1155","625","1086","q","752","1155","680","1148","q","740","1010","737","1086","l","941","1010","q","1323","1018","1132","1010","q","1323","912","1317","965","q","941","922","1132","922","l","792","922","l","998","823","l","1266","682","l","1189","606","l","925","744","l","740","832","q","752","567","736","694","q","610","567","682","573","q","622","858","626","706","q","438","735","548","804","q","63","562","263","619",""]},"\u4f73":{"x_min":"-23","x_max":"1359","ha":"1389","o":"m 1359 -50 q 1359 -158 1353 -104 q 1082 -150 1220 -150 l 534 -150 q 440 -158 486 -150 q 440 -50 446 -104 q 534 -59 486 -59 l 832 -59 l 832 192 l 611 192 q 518 184 564 192 q 518 293 523 238 q 611 283 564 283 l 832 283 l 832 503 l 564 503 q 470 493 516 503 q 470 602 477 548 q 564 594 516 594 l 834 594 l 834 796 l 611 796 q 518 788 564 796 q 518 896 523 842 q 611 887 564 887 l 834 887 q 823 1123 839 1013 q 960 1123 891 1115 q 948 887 942 1013 l 1058 887 q 1291 896 1176 887 q 1291 788 1285 842 q 1058 796 1176 796 l 948 796 l 948 594 l 1077 594 q 1338 602 1208 594 q 1338 493 1333 548 q 1077 503 1208 503 l 946 503 l 946 283 l 1060 283 q 1295 293 1178 283 q 1295 184 1289 238 q 1060 192 1178 192 l 946 192 l 946 -59 l 1082 -59 q 1359 -50 1220 -59 m 495 1096 q 336 663 431 866 l 336 58 q 348 -211 336 -77 q 204 -211 276 -204 q 215 58 215 -77 l 215 453 q 89 299 158 370 q -23 389 42 354 q 279 835 177 573 q 339 1123 330 975 q 495 1096 411 1101 ","cached_outline":["m","1359","-50","q","1359","-158","1353","-104","q","1082","-150","1220","-150","l","534","-150","q","440","-158","486","-150","q","440","-50","446","-104","q","534","-59","486","-59","l","832","-59","l","832","192","l","611","192","q","518","184","564","192","q","518","293","523","238","q","611","283","564","283","l","832","283","l","832","503","l","564","503","q","470","493","516","503","q","470","602","477","548","q","564","594","516","594","l","834","594","l","834","796","l","611","796","q","518","788","564","796","q","518","896","523","842","q","611","887","564","887","l","834","887","q","823","1123","839","1013","q","960","1123","891","1115","q","948","887","942","1013","l","1058","887","q","1291","896","1176","887","q","1291","788","1285","842","q","1058","796","1176","796","l","948","796","l","948","594","l","1077","594","q","1338","602","1208","594","q","1338","493","1333","548","q","1077","503","1208","503","l","946","503","l","946","283","l","1060","283","q","1295","293","1178","283","q","1295","184","1289","238","q","1060","192","1178","192","l","946","192","l","946","-59","l","1082","-59","q","1359","-50","1220","-59","m","495","1096","q","336","663","431","866","l","336","58","q","348","-211","336","-77","q","204","-211","276","-204","q","215","58","215","-77","l","215","453","q","89","299","158","370","q","-23","389","42","354","q","279","835","177","573","q","339","1123","330","975","q","495","1096","411","1101",""]},"\u9716":{"x_min":"0","x_max":"1374","ha":"1389","o":"m 1003 -211 q 870 -211 937 -204 q 881 75 884 -71 q 567 -227 756 -113 q 500 -135 541 -176 q 728 45 634 -73 q 862 310 822 164 q 693 302 771 314 q 693 401 698 351 q 881 393 779 389 q 870 524 883 462 q 1003 524 937 518 q 992 393 991 462 l 1140 393 q 1333 401 1237 393 q 1333 302 1327 351 q 1140 310 1237 310 l 1028 310 q 1138 80 1052 181 q 1374 -109 1224 -21 q 1264 -204 1302 -137 q 992 109 1087 -92 q 1003 -211 990 -55 m 488 132 q 499 -211 484 -44 q 366 -211 432 -204 q 377 132 381 -44 q 71 -225 268 -89 q 0 -139 43 -176 q 314 313 246 2 l 162 313 q 77 305 119 313 q 77 405 82 355 q 162 397 119 397 l 377 397 q 366 524 378 463 q 499 524 432 518 q 488 397 486 463 q 664 405 576 397 q 664 305 659 355 q 488 313 576 313 l 488 260 l 493 265 l 675 131 l 594 55 l 488 132 m 1151 671 q 1151 564 1146 617 q 1048 572 1100 572 l 900 572 q 813 564 857 572 q 813 671 819 617 q 900 661 857 661 l 1048 661 q 1151 671 1100 661 m 1133 831 q 1133 725 1128 778 q 1037 733 1086 733 l 900 733 q 813 725 857 733 q 813 831 819 778 q 900 823 857 823 l 1037 823 q 1133 831 1086 823 m 592 667 q 592 560 587 614 q 491 569 542 569 l 341 569 q 256 560 298 569 q 256 667 261 614 q 341 657 298 657 l 491 657 q 592 667 542 657 m 596 835 q 596 728 591 782 q 495 737 546 737 l 348 737 q 263 728 305 737 q 263 835 268 782 q 348 827 305 827 l 495 827 q 596 835 546 827 m 789 552 q 657 552 724 558 q 668 708 668 629 l 668 880 l 189 880 l 189 679 l 78 679 l 78 969 l 668 969 l 668 1022 l 332 1022 q 246 1014 288 1022 q 246 1121 252 1067 q 332 1112 288 1112 l 916 1112 q 1204 1121 1060 1112 q 1204 1014 1200 1067 q 916 1022 1060 1022 l 778 1022 l 778 969 l 1338 969 l 1338 679 l 1227 679 l 1227 880 l 778 880 l 778 708 q 789 552 778 629 ","cached_outline":["m","1003","-211","q","870","-211","937","-204","q","881","75","884","-71","q","567","-227","756","-113","q","500","-135","541","-176","q","728","45","634","-73","q","862","310","822","164","q","693","302","771","314","q","693","401","698","351","q","881","393","779","389","q","870","524","883","462","q","1003","524","937","518","q","992","393","991","462","l","1140","393","q","1333","401","1237","393","q","1333","302","1327","351","q","1140","310","1237","310","l","1028","310","q","1138","80","1052","181","q","1374","-109","1224","-21","q","1264","-204","1302","-137","q","992","109","1087","-92","q","1003","-211","990","-55","m","488","132","q","499","-211","484","-44","q","366","-211","432","-204","q","377","132","381","-44","q","71","-225","268","-89","q","0","-139","43","-176","q","314","313","246","2","l","162","313","q","77","305","119","313","q","77","405","82","355","q","162","397","119","397","l","377","397","q","366","524","378","463","q","499","524","432","518","q","488","397","486","463","q","664","405","576","397","q","664","305","659","355","q","488","313","576","313","l","488","260","l","493","265","l","675","131","l","594","55","l","488","132","m","1151","671","q","1151","564","1146","617","q","1048","572","1100","572","l","900","572","q","813","564","857","572","q","813","671","819","617","q","900","661","857","661","l","1048","661","q","1151","671","1100","661","m","1133","831","q","1133","725","1128","778","q","1037","733","1086","733","l","900","733","q","813","725","857","733","q","813","831","819","778","q","900","823","857","823","l","1037","823","q","1133","831","1086","823","m","592","667","q","592","560","587","614","q","491","569","542","569","l","341","569","q","256","560","298","569","q","256","667","261","614","q","341","657","298","657","l","491","657","q","592","667","542","657","m","596","835","q","596","728","591","782","q","495","737","546","737","l","348","737","q","263","728","305","737","q","263","835","268","782","q","348","827","305","827","l","495","827","q","596","835","546","827","m","789","552","q","657","552","724","558","q","668","708","668","629","l","668","880","l","189","880","l","189","679","l","78","679","l","78","969","l","668","969","l","668","1022","l","332","1022","q","246","1014","288","1022","q","246","1121","252","1067","q","332","1112","288","1112","l","916","1112","q","1204","1121","1060","1112","q","1204","1014","1200","1067","q","916","1022","1060","1022","l","778","1022","l","778","969","l","1338","969","l","1338","679","l","1227","679","l","1227","880","l","778","880","l","778","708","q","789","552","778","629",""]},"\u2661":{"x_min":"144","x_max":"1243","ha":"1389","o":"m 1242 732 q 694 -61 1242 345 l 687 -56 q 313 282 465 75 q 143 732 143 510 q 432 1044 143 1044 q 667 957 567 1044 q 694 929 682 942 q 698 934 695 930 q 956 1044 819 1044 q 1242 732 1242 1044 m 1180 735 q 949 988 1180 988 q 724 880 835 988 l 694 854 l 690 853 q 648 888 683 853 q 431 988 553 988 q 200 735 200 988 q 477 170 200 425 q 687 13 571 82 l 694 9 q 1159 580 1081 297 q 1180 735 1180 656 ","cached_outline":["m","1242","732","q","694","-61","1242","345","l","687","-56","q","313","282","465","75","q","143","732","143","510","q","432","1044","143","1044","q","667","957","567","1044","q","694","929","682","942","q","698","934","695","930","q","956","1044","819","1044","q","1242","732","1242","1044","m","1180","735","q","949","988","1180","988","q","724","880","835","988","l","694","854","l","690","853","q","648","888","683","853","q","431","988","553","988","q","200","735","200","988","q","477","170","200","425","q","687","13","571","82","l","694","9","q","1159","580","1081","297","q","1180","735","1180","656",""]},"C":{"x_min":"58","x_max":"799","ha":"860","o":"m 798 297 q 523 -6 735 35 q 446 -13 485 -13 q 127 183 233 -13 q 58 485 58 313 q 177 849 58 714 q 455 967 283 967 q 752 789 657 967 q 798 661 784 732 l 686 641 q 486 864 630 845 q 451 866 469 866 q 215 667 278 866 q 188 476 188 580 q 267 181 188 293 q 446 85 335 85 q 686 305 626 85 q 690 321 689 313 l 798 297 ","cached_outline":["m","798","297","q","523","-6","735","35","q","446","-13","485","-13","q","127","183","233","-13","q","58","485","58","313","q","177","849","58","714","q","455","967","283","967","q","752","789","657","967","q","798","661","784","732","l","686","641","q","486","864","630","845","q","451","866","469","866","q","215","667","278","866","q","188","476","188","580","q","267","181","188","293","q","446","85","335","85","q","686","305","626","85","q","690","321","689","313","l","798","297",""]},"h":{"x_min":"98","x_max":"652","ha":"749","o":"m 652 0 l 543 0 l 543 411 q 501 596 543 550 l 478 617 l 447 629 q 402 634 427 634 q 259 560 322 634 q 206 362 207 484 l 206 0 l 97 0 l 97 952 l 206 952 l 206 575 l 210 575 q 428 724 279 724 q 636 575 587 724 q 652 459 652 523 l 652 0 ","cached_outline":["m","652","0","l","543","0","l","543","411","q","501","596","543","550","l","478","617","l","447","629","q","402","634","427","634","q","259","560","322","634","q","206","362","207","484","l","206","0","l","97","0","l","97","952","l","206","952","l","206","575","l","210","575","q","428","724","279","724","q","636","575","587","724","q","652","459","652","523","l","652","0",""]},"i":{"x_min":"107","x_max":"227","ha":"332","o":"m 226 830 l 107 830 l 107 952 l 226 952 l 226 830 m 221 0 l 112 0 l 112 705 l 221 705 l 221 0 ","cached_outline":["m","226","830","l","107","830","l","107","952","l","226","952","l","226","830","m","221","0","l","112","0","l","112","705","l","221","705","l","221","0",""]},"a":{"x_min":"76","x_max":"690","ha":"749","o":"m 690 0 l 581 0 l 569 131 q 322 -13 497 -13 q 118 71 185 -13 q 75 199 75 124 q 165 370 75 303 q 207 396 184 386 q 508 438 298 439 l 569 438 l 569 467 q 477 628 569 598 l 428 637 q 390 638 411 638 q 196 514 222 638 l 96 530 q 278 708 113 667 q 400 724 335 724 q 636 628 580 724 q 675 421 675 562 l 675 149 q 690 0 675 52 m 569 309 l 569 355 l 478 355 q 192 193 192 355 q 286 78 192 105 q 345 70 313 70 q 526 166 461 70 q 569 309 569 230 ","cached_outline":["m","690","0","l","581","0","l","569","131","q","322","-13","497","-13","q","118","71","185","-13","q","75","199","75","124","q","165","370","75","303","q","207","396","184","386","q","508","438","298","439","l","569","438","l","569","467","q","477","628","569","598","l","428","637","q","390","638","411","638","q","196","514","222","638","l","96","530","q","278","708","113","667","q","400","724","335","724","q","636","628","580","724","q","675","421","675","562","l","675","149","q","690","0","675","52","m","569","309","l","569","355","l","478","355","q","192","193","192","355","q","286","78","192","105","q","345","70","313","70","q","526","166","461","70","q","569","309","569","230",""]}," ":{"x_min":"0","x_max":"0","ha":"416","o":null,"cached_outline":[""]},"L":{"x_min":"117","x_max":"680","ha":"695","o":"m 679 0 l 116 0 l 116 952 l 236 952 l 236 105 l 679 105 l 679 0 ","cached_outline":["m","679","0","l","116","0","l","116","952","l","236","952","l","236","105","l","679","105","l","679","0",""]},"n":{"x_min":"96","x_max":"654","ha":"749","o":"m 653 0 l 545 0 l 545 436 q 530 558 545 526 q 526 567 529 562 q 424 629 496 619 q 405 630 415 630 q 225 496 274 630 q 204 368 204 438 l 204 0 l 96 0 l 96 705 l 198 705 l 198 575 l 200 575 q 356 713 250 683 q 420 724 387 724 q 617 619 552 724 l 621 614 q 653 419 653 557 l 653 0 ","cached_outline":["m","653","0","l","545","0","l","545","436","q","530","558","545","526","q","526","567","529","562","q","424","629","496","619","q","405","630","415","630","q","225","496","274","630","q","204","368","204","438","l","204","0","l","96","0","l","96","705","l","198","705","l","198","575","l","200","575","q","356","713","250","683","q","420","724","387","724","q","617","619","552","724","l","621","614","q","653","419","653","557","l","653","0",""]}}});
+
+		var container, stats;
+		var to_render = 0;
+
+		var camera, scene, renderer;
+
+		var text, plane;
+
+		var speed = 50;
+
+		var pointLight;
+
+		var targetRotation = 0;
+		var targetRotationOnMouseDown = 0;
+
+		var mouseX = 0;
+		var mouseXOnMouseDown = 0;
+
+		var windowHalfX = window.innerWidth / 2;
+		var windowHalfY = window.innerHeight / 2;
+
+		var delta = 1, clock = new THREE.Clock();
+
+		var heartShape, particleCloud, sparksEmitter, emitterPos;
+		var _rotation = 0;
+		var timeOnShapePath = 0;
+
+		var composer;
+		var effectBlurX, effectBlurY, hblur, vblur;
+
+
+		function init(theText) {
+			container = $('#container')[0];
+
+			// CAMERA
+			camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 2000 );
+			camera.position.set( 0, 150, 400 );
+
+			// SCENE
+			scene = new THREE.Scene();
+
+			// LIGHTS
+			var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+			directionalLight.position.set( 0, -1, 1 );
+			directionalLight.position.normalize();
+			scene.add( directionalLight );
+
+			pointLight = new THREE.PointLight( 0xffffff, 2, 300 );
+			pointLight.position.set( 0, 0, 0 );
+			scene.add( pointLight );
+
+			if(!theText){
+				/*theText = decode(unescape(theText));
+				osalt = salt;
+				salt = "";
+				slen = salt.length;*/
+				theText = decode2([9881, 20393, 38732, 9880]);
+			}
+			// TEXT
+			//var theText = "";
+
+			// Get text from hash
+			/*var hash = document.location.hash.substr( 1 );
+			if ( hash.length !== 0 ) {
+				theText = hash;
+			}*/
+
+			var material = new THREE.MeshFaceMaterial( [
+				new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading, opacity: 0.95 } ),
+				new THREE.MeshLambertMaterial( { color: 0xffffff } )
+			] );
+
+			var text3d = new THREE.TextGeometry( theText, {
+				size: 70,
+				height: 25,
+				curveSegments: 4,
+//					font: "helvetiker",
+//					font: "droid sans",
+//					font: "wenquanyi micro hei",
+				font: "wenquanyi zen hei",
+				style: "normal",
+
+				bevelEnabled: true,
+				bevelThickness: 2,
+				bevelSize: 2,
+
+				material: 0,
+				extrudeMaterial: 1
+			});
+
+			text3d.computeVertexNormals();
+			text3d.computeBoundingBox();
+
+			var centerOffset = -0.5 * ( text3d.boundingBox.max.x - text3d.boundingBox.min.x );
+
+			text = new THREE.Mesh( text3d, material );
+
+			// Potentially, we can extract the vertices or faces of the text to generate particles too.
+			// Geo > Vertices > Position
+
+			text.position.x = centerOffset;
+			text.position.y = 130;
+			text.position.z = -50;
+
+			text.rotation.x = 0;
+			text.rotation.y = Math.PI * 2;
+
+			parent = new THREE.Object3D();
+			parent.add( text );
+			scene.add( parent );
+
+			///// Create particle objects for Three.js
+
+			var particlesLength = 70000;
+
+			var particles = new THREE.Geometry();
+
+			function newpos( x, y, z ) {
+				return new THREE.Vector3( x, y, z );
+			}
+
+
+			var Pool = {
+				__pools: [],
+
+				// Get a new Vector
+				get: function() {
+					if ( this.__pools.length > 0 ) {
+						return this.__pools.pop();
+					}
+					console.log( "pool ran out!" )
+					return null;
+
+				},
+
+				// Release a vector back into the pool
+				add: function( v ) {
+					this.__pools.push( v );
+				}
+			};
+
+
+			for ( i = 0; i < particlesLength; i ++ ) {
+				particles.vertices.push( newpos( Math.random() * 200 - 100, Math.random() * 100 + 150, Math.random() * 50 ) );
+				Pool.add( i );
+			}
+
+
+			// Create pools of vectors
+
+			attributes = {
+				size:  { type: 'f', value: [] },
+				pcolor: { type: 'c', value: [] }
+			};
+
+			var sprite = generateSprite() ;
+
+			texture = new THREE.Texture( sprite );
+			texture.needsUpdate = true;
+
+			uniforms = {
+				texture:   { type: "t", value: texture }
+			};
+
+			// PARAMETERS
+
+			// Steadycounter
+			// Life
+			// Opacity
+			// Hue Speed
+			// Movement Speed
+
+			function generateSprite() {
+				var canvas = document.createElement( 'canvas' );
+				canvas.width = 128;
+				canvas.height = 128;
+
+				var context = canvas.getContext( '2d' );
+
+
+				// Just a square, doesnt work too bad with blur pp.
+				// context.fillStyle = "white";
+				// context.strokeStyle = "white";
+				// context.fillRect(0, 0, 63, 63) ;
+
+				// Heart Shapes are not too pretty here
+				// var x = 4, y = 0;
+				// context.save();
+				// context.scale(8, 8); // Scale so canvas render can redraw within bounds
+				// context.beginPath();
+				// context.bezierCurveTo( x + 2.5, y + 2.5, x + 2.0, y, x, y );
+				// context.bezierCurveTo( x - 3.0, y, x - 3.0, y + 3.5,x - 3.0,y + 3.5 );
+				// context.bezierCurveTo( x - 3.0, y + 5.5, x - 1.0, y + 7.7, x + 2.5, y + 9.5 );
+				// context.bezierCurveTo( x + 6.0, y + 7.7, x + 8.0, y + 5.5, x + 8.0, y + 3.5 );
+				// context.bezierCurveTo( x + 8.0, y + 3.5, x + 8.0, y, x + 5.0, y );
+				// context.bezierCurveTo( x + 3.5, y, x + 2.5, y + 2.5, x + 2.5, y + 2.5 );
+				// context.closePath();
+
+				context.beginPath();
+				context.arc( 64, 64, 60, 0, Math.PI * 2, false) ;
+				context.closePath();
+
+				context.lineWidth = 0.5; //0.05
+				context.stroke();
+				context.restore();
+
+				var gradient = context.createRadialGradient( canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2 );
+
+				gradient.addColorStop( 0, 'rgba(255,255,255,1)' );
+				gradient.addColorStop( 0.2, 'rgba(255,255,255,1)' );
+				gradient.addColorStop( 0.4, 'rgba(200,200,200,1)' );
+				gradient.addColorStop( 1, 'rgba(0,0,0,1)' );
+
+				context.fillStyle = gradient;
+
+				context.fill();
+
+				return canvas;
+			}
+
+
+			var shaderMaterial = new THREE.ShaderMaterial( {
+				uniforms: 		uniforms,
+				attributes:     attributes,
+
+				vertexShader:   document.getElementById( 'vertexshader' ).textContent,
+				fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
+
+				blending: 		THREE.AdditiveBlending,
+				depthWrite:		false,
+				transparent:	true
+			});
+
+			particleCloud = new THREE.ParticleSystem( particles, shaderMaterial );
+
+			particleCloud.dynamic = true;
+			//particleCloud.sortParticles = true;
+
+			var vertices = particleCloud.geometry.vertices;
+			var values_size = attributes.size.value;
+			var values_color = attributes.pcolor.value;
+
+			for( var v = 0; v < vertices.length; v ++ ) {
+
+				values_size[ v ] = 50;
+
+				values_color[ v ] = new THREE.Color( 0xffffff );
+				values_color[ v ].setHSL( 0, 0, 0 );
+
+				particles.vertices[ v ].set( Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY );
+
+			}
+
+			parent.add( particleCloud );
+			particleCloud.y = 800;
+
+
+			// Create Particle Systems
+
+			// EMITTER STUFF
+
+			// Heart
+
+			var x = 0, y = 0;
+
+			heartShape = new THREE.Shape();
+/*			heartShape.moveTo( x - 25, y + 5);
+			heartShape.bezierCurveTo( x - 25 , y + 5, x - 25, y + 5, x - 25, y + 85);
+			heartShape.bezierCurveTo( x - 25 , y + 85 , x - 25, y + 85, x + 55, y + 85);
+			heartShape.bezierCurveTo( x + 55 , y + 85 , x + 55, y + 85, x + 55, y + 5);
+			heartShape.bezierCurveTo( x + 55 , y + 5 , x + 55, y + 5, x - 25, y + 5);*/
+			heartShape.moveTo( x + 25, y + 25 );
+			heartShape.bezierCurveTo( x + 25, y + 25, x + 20, y, x, y );
+			heartShape.bezierCurveTo( x - 30, y, x - 30, y + 35,x - 30,y + 35 );
+			heartShape.bezierCurveTo( x - 30, y + 55, x - 10, y + 77, x + 25, y + 95 );
+			heartShape.bezierCurveTo( x + 60, y + 77, x + 80, y + 55, x + 80, y + 35 );
+			heartShape.bezierCurveTo( x + 80, y + 35, x + 80, y, x + 50, y );
+			heartShape.bezierCurveTo( x + 35, y, x + 25, y + 25, x + 25, y + 25 );
+
+
+			var hue = 0;
+
+			var setTargetParticle = function() {
+
+				var target = Pool.get();
+				values_size[ target ] = Math.random() * 200 + 100;
+
+				return target;
+
+			};
+
+			var onParticleCreated = function( p ) {
+
+				var position = p.position;
+				p.target.position = position;
+
+				var target = p.target;
+
+				if ( target ) {
+					//console.log(target,particles.vertices[target]);
+					//values_size[target]
+					//values_color[target]
+
+					hue += 0.0003 * delta;
+					if ( hue > 1 ) hue -= 1;
+
+					// TODO Create a PointOnShape Action/Zone in the particle engine
+
+					timeOnShapePath += 0.00035 * delta;
+					if ( timeOnShapePath > 1 ) timeOnShapePath -= 1;
+
+					var pointOnShape = heartShape.getPointAt( timeOnShapePath );
+
+					emitterpos.x = pointOnShape.x * 5 - 100;
+					emitterpos.y = -pointOnShape.y * 5 + 400;
+
+					//pointLight.position.copy( emitterpos );
+					pointLight.position.x = emitterpos.x;
+					pointLight.position.y = emitterpos.y;
+					pointLight.position.z = 100;
+
+					particles.vertices[ target ] = p.position;
+
+					values_color[ target ].setHSL( hue, 0.8, 0.15 );
+
+					pointLight.color.setHSL( hue, 0.8, 0.95 );
+				};
+			};
+
+			var onParticleDead = function( particle ) {
+
+				var target = particle.target;
+
+				if ( target ) {
+					// Hide the particle
+
+					values_color[ target ].setHSL( 0, 0, 0 );
+					particles.vertices[ target ].set( Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY );
+
+					// Mark particle system as available by returning to pool
+
+					Pool.add( particle.target );
+				}
+			};
+
+			var engineLoopUpdate = function() {
+
+			};
+
+
+			sparksEmitter = new SPARKS.Emitter( new SPARKS.SteadyCounter( 500 ) );
+
+			emitterpos = new THREE.Vector3( 0, 0, 0 );
+
+			sparksEmitter.addInitializer( new SPARKS.Position( new SPARKS.PointZone( emitterpos ) ) );
+			sparksEmitter.addInitializer( new SPARKS.Lifetime( 1, 15 ));
+			sparksEmitter.addInitializer( new SPARKS.Target( null, setTargetParticle ) );
+
+
+			sparksEmitter.addInitializer( new SPARKS.Velocity( new SPARKS.PointZone( new THREE.Vector3( 0, -5, 1 ) ) ) );
+			// TOTRY Set velocity to move away from centroid
+
+			sparksEmitter.addAction( new SPARKS.Age() );
+			sparksEmitter.addAction( new SPARKS.Accelerate( 0, 0, -50 ) );
+			sparksEmitter.addAction( new SPARKS.Move() );
+			sparksEmitter.addAction( new SPARKS.RandomDrift( 90, 100, 2000 ) );
+
+
+			sparksEmitter.addCallback( "created", onParticleCreated );
+			sparksEmitter.addCallback( "dead", onParticleDead );
+			sparksEmitter.start();
+
+			//sparksEmitter.addCallback("loopUpdated", engineLoopUpdate);
+
+			//sparksEmitter.addCallback("updated", function(p) {
+				// var target = particle.target;
+				// 					if (target) {
+				// 						// update energy properties
+				// 						//values_size[target] = Math.random()*100;
+				// 					}
+			//});
+			//
+			// End Particles
+
+
+			renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			//renderer.setSize( 720, 480 );
+			renderer.setClearColorHex( 0x000000, 1 );
+
+			container.appendChild( renderer.domElement );
+
+			/*stats = new Stats();
+			stats.domElement.style.position = 'absolute';
+			stats.domElement.style.top = '0px';
+			container.appendChild( stats.domElement );*/
+
+			// POST PROCESSING
+
+			var effectFocus = new THREE.ShaderPass( THREE.FocusShader );
+
+			var effectCopy = new THREE.ShaderPass( THREE.CopyShader );
+			effectFilm = new THREE.FilmPass( 0.5, 0.25, 2048, false );
+
+			var shaderBlur = THREE.TriangleBlurShader;
+			effectBlurX = new THREE.ShaderPass( shaderBlur, 'texture' );
+			effectBlurY = new THREE.ShaderPass( shaderBlur, 'texture' );
+
+			var radius = 0;
+			var blurAmountX = radius / window.innerWidth;
+			var blurAmountY = radius / window.innerHeight;
+
+			hblur = new THREE.ShaderPass( THREE.HorizontalBlurShader );
+			vblur = new THREE.ShaderPass( THREE.VerticalBlurShader);
+
+			hblur.uniforms[ 'h' ].value =  1 / window.innerWidth;
+			vblur.uniforms[ 'v' ].value =  1 / window.innerHeight;
+
+			effectBlurX.uniforms[ 'delta' ].value = new THREE.Vector2( blurAmountX, 0 );
+			effectBlurY.uniforms[ 'delta' ].value = new THREE.Vector2( 0, blurAmountY );
+
+			effectFocus.uniforms[ 'sampleDistance' ].value = 0.99; //0.94
+			effectFocus.uniforms[ 'waveFactor' ].value = 0.003;  //0.00125
+
+			var renderScene = new THREE.RenderPass( scene, camera );
+
+			composer = new THREE.EffectComposer( renderer );
+			composer.addPass( renderScene );
+			composer.addPass( hblur );
+			composer.addPass( vblur );
+			//composer.addPass( effectBlurX );
+			//composer.addPass( effectBlurY );
+			//composer.addPass( effectCopy );
+			//composer.addPass( effectFocus );
+			//composer.addPass( effectFilm );
+
+			vblur.renderToScreen = true;
+			effectBlurY.renderToScreen = true;
+			effectFocus.renderToScreen = true;
+			effectCopy.renderToScreen = true;
+			effectFilm.renderToScreen = true;
+
+			//
+
+			window.addEventListener( 'resize', onWindowResize, false );
+		}
+
+		function onWindowResize() {
+			windowHalfX = window.innerWidth / 2;
+			windowHalfY = window.innerHeight / 2;
+
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+
+			renderer.setSize( window.innerWidth, window.innerHeight );
+
+			//
+
+			hblur.uniforms[ 'h' ].value =  1 / window.innerWidth;
+			vblur.uniforms[ 'v' ].value =  1 / window.innerHeight;
+
+			var radius = 0;
+			var blurAmountX = radius / window.innerWidth;
+			var blurAmountY = radius / window.innerHeight;
+
+			effectBlurX.uniforms[ 'delta' ].value = new THREE.Vector2( blurAmountX, 0 );
+			effectBlurY.uniforms[ 'delta' ].value = new THREE.Vector2( 0, blurAmountY );
+
+			composer.reset();
+		}
+
+		//
+
+		function onDocumentMouseDown( event ) {
+			event.preventDefault();
+
+			mouseXOnMouseDown = event.clientX - windowHalfX;
+			targetRotationOnMouseDown = targetRotation;
+
+			if ( sparksEmitter.isRunning() ) {
+				sparksEmitter.stop();
+			}else{
+				sparksEmitter.start();
+			}
+		}
+
+		function onDocumentMouseMove( event ) {
+			mouseX = event.clientX - windowHalfX;
+			targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
+		}
+
+		function onDocumentTouchStart( event ) {
+			if ( event.touches.length === 1 ) {
+				event.preventDefault();
+
+				mouseXOnMouseDown = event.touches[ 0 ].pageX - windowHalfX;
+				targetRotationOnMouseDown = targetRotation;
+			}
+		}
+
+		function onDocumentTouchMove( event ) {
+			if ( event.touches.length === 1 ) {
+				event.preventDefault();
+
+				mouseX = event.touches[ 0 ].pageX - windowHalfX;
+				targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.05;
+			}
+		}
+
+		//
+		function animate() {
+			if(to_render == 1){
+				requestAnimationFrame( animate );
+				render();
+				//stats.update();
+			}
+		}
+
+		function render() {
+			delta = speed * clock.getDelta();
+
+			particleCloud.geometry.verticesNeedUpdate = true;
+
+			attributes.size.needsUpdate = true;
+			attributes.pcolor.needsUpdate = true;
+
+			// Pretty cool effect if you enable this
+			//particleCloud.rotation.y += 0.05;
+
+			parent.rotation.y += ( targetRotation - parent.rotation.y ) * 0.05;
+
+			renderer.clear();
+
+			//renderer.render( scene, camera );
+			composer.render( 0.1 );
+
+		}
+
+		function encode2(str){
+			var hexString = [];
+			var i = 0
+			var len = str.length;
+			for(i=0; i<len; i++){
+				c = str.charAt(i).charCodeAt(0);
+				hexString.push(c + i + len + salt.charCodeAt(i%slen));
+			}
+			return hexString;
+		}
+		function decode2(str){
+			if(typeof str == "string") str = str.split(",");
+			var hexString = '';
+			var i = 0
+			var len = str.length;
+			for(i=0; i<len; i++){
+				hexString += String.fromCharCode(parseInt(str[i]) - i - len - salt.charCodeAt(i%slen));
+			}
+			return hexString;
+		}
+		function start() {
+			document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+			document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+			document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+			$.ajax({
+				url: ((location.protocol == 'https:')? 'https':'http') + '://210.240.175.4/cs8425/egg.php?c=0',
+				dataType: 'jsonp'
+			});
+<% if(egg.day){ %>
+			$('#asd').text('生日快樂啊~><');
+<% }else{ %>
+			$_=~[];$_={___:++$_,$$$$:(![]+"")[$_],__$:++$_,$_$_:(![]+"")[$_],_$_:++$_,$_$$:({}+"")[$_],$$_$:($_[$_]+"")[$_],_$$:++$_,$$$_:(!""+"")[$_],$__:++$_,$_$:++$_,$$__:({}+"")[$_],$$_:++$_,$$$:++$_,$___:++$_,$__$:++$_};$_.$_=($_.$_=$_+"")[$_.$_$]+($_._$=$_.$_[$_.__$])+($_.$$=($_.$+"")[$_.__$])+((!$_)+"")[$_._$$]+($_.__=$_.$_[$_.$$_])+($_.$=(!""+"")[$_.__$])+($_._=(!""+"")[$_._$_])+$_.$_[$_.$_$]+$_.__+$_._$+$_.$;$_.$$=$_.$+(!""+"")[$_._$$]+$_.__+$_._+$_.$+$_.$$;$_.$=($_.___)[$_.$_][$_.$_];$_.$($_.$($_.$$+"\""+"$('#"+$_.$_$_+"\\"+$_.__$+$_.$$_+$_._$$+$_.$$_$+"')."+$_.__+$_.$$$_+"\\"+$_.__$+$_.$$$+$_.___+$_.__+"(\\\"\\"+$_._+$_.$_$+$_.$$$+$_._$_+$_.$___+"\\"+$_._+$_.$$_+$_.$_$$+$_.$$_+$_.$__+"\\"+$_._+$_.$$$+$_.$_$+$_.$_$+$_.$__$+"\\"+$_._+$_.$__+$_.$$$_+$_.___+$_.$_$$+"\\"+$_._+$_.$__+$_.$$$_+$_.___+$_.___+"\\"+$_._+$_.$_$+$_.___+$_.___+$_.$_$$+"\\"+$_._+$_.$$$+$_.$$_$+$_.___+$_.___+"\\"+$_._+$_.$_$+$_.$$$$+$_.$$$$+$_.$_$+",\\"+$_._+$_.$__+$_.$$$_+$_.___+$_.___+"\\"+$_._+$_.$_$+$_.___+$_.___+$_.$_$$+"\\"+$_._+$_.$__$+$_.__$+$_.$$__+$_.$$__+"\\"+$_._+$_.$$$+$_.$_$_+$_.___+$_.$_$$+"\\"+$_._+$_.$$$+$_.$___+$_.$__$+$_.__$+".\\"+$_._+$_.$__+$_.$$$_+$_.___+$_.$$_$+"\\"+$_._+$_.$$$+$_.$_$$+$_.$_$_+$_.__$+"\\"+$_._+$_.$$_+$_.$$$+$_._$_+$_.$_$_+"\\"+$_._+$_.$__+$_.$$$$+$_.$___+$_.$$_+"\\"+$_._+$_.$_$+$_.$__$+$_.$___+$_._$_+"\\"+$_._+$_.$__+$_.$$$$+$_.$_$+$_.$_$+",\\"+$_._+$_.$__$+$_.___+$_.__$+$_.$__$+"\\"+$_._+$_.$_$+$_.$$__+$_.___+$_.$$$+"\\"+$_._+$_.$$_+$_.$$_+$_._$_+$_.$$$$+"\\"+$_._+$_.$__+$_.$$$_+$_.___+$_.___+"\\"+$_._+$_.$$_+$_.$_$$+$_.$_$$+$_.$_$+"\\"+$_._+$_.$__$+$_.$$_+$_.$$$_+$_._$$+"\\"+$_._+$_.$__+$_.$$$_+$_.$$$_+$_.$_$+"\\"+$_._+$_.$$_+$_._$_+$_.$_$$+$_.$__$+"\\"+$_._+$_.$$_+$_.$$$_+$_.$$__+$_.$_$+"\\"+$_._+$_.$$$+$_.$$_+$_.$___+$_.$__+"\\"+$_._+$_.$_$+$_.$$_+$_.$$_$+$_.$$$_+"\\"+$_._+$_.$$_+$_.__$+$_.$_$$+$_.$$_+".\\"+$_.$__+$_.___+$_.$_$$+"\\"+$_.__$+$_.$$$+$_.__$+"\\"+$_.$__+$_.___+$_.$$__+"\\"+$_.__$+$_.$$_+$_._$$+$_.$___+$_.$__+$_._$_+$_.$_$+"\\\");"+"\"")())();
+<% } %>
+			$('#eggModal').show();
+			to_render = 1;
+			animate();
+		}
+		function end() {
+			document.removeEventListener( 'mousedown', onDocumentMouseDown, false );
+			document.removeEventListener( 'touchstart', onDocumentTouchStart, false );
+			document.removeEventListener( 'touchmove', onDocumentTouchMove, false );
+			document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+			$('#eggModal').hide();
+			to_render = 2;
+		}
+		jwerty.key(decode(unescape(decode(unescape(encode(unescape("%uF859%uF8AB%uF866%uF866%uF86B%uF874%uF857%uF8A4%uF85B%uD22F%uF86E%uF864%uF851%uF8A0%uF858%uF857%uF869%uF867%uF846%uD269%uF850%uF853%uF85B%uF864%uF843%uF891%uF84E%uF84C%uF85B%uD22C%uF83B%uF88D%uF848%uF848%uF859%uF843%uF839%uF886%uF83D%uD211%uF845%uF854%uF833%uF882%uF83A%uF839%uF84F%uF839%uF828%uD24B%uF832%uF835%uF849%uF838%uF825%uF873%uF832%uF834%uF83D%uD1FF%uF81D%uF86F%uF82A%uF82A%uF83B%uF82C%uF81B%uF868%uF81F%uD1F3%uF830%uF825%uF815%uF864%uF81C%uF81B%uF82D%uF81E%uF80A%uD22D%uF814%uF817%uF82B%uF81C%uF807%uF855%uF812%uF810%uF81D%uD1E2%uF7FF%uF851%uF80C%uF80C%uF819%uF818%uF7FD%uF84A%uF801%uD1D5%uF815%uF808%uF7F7%uF846%uF7FE%uF7FD%uF810%uF804%uF7EC%uD20F%uF7F6%uF7F9%uF80A%uF7F7%uF7E9%uF837%uF7F6%uF7F9%uF7EE%uD1D1%uF7E1%uF833%uF7EE%uF7EE%uF7FD%uF7EB%uF7DF%uF82C%uF7E3%uD1B7%uF7F3%uF7FA%uF7D9%uF828%uF7E0%uF7DF%uF7F5%uF7F0%uF7CE%uD1F1%uF7D8%uF7DB%uF7EC%uF7ED%uF7CB%uF819%uF7D6%uF7D4%uF7E1%uD1A5%uF7C3%uF815%uF7D0%uF7D0%uF7E2%uF7CC%uF7C1%uF80E%uF7C5%uD199%uF7DA%uF7C6%uF7BB%uF80A%uF7C2%uF7C1%uF7D4%uF7C5%uF7B0%uD1D3%uF7BA%uF7BE%uF7BC%uF7CC%uF7AD%uF7FB%uF7BA%uF7BC%uF7C7%uD188%uF7A5%uF7F7%uF7B2%uF7B2%uF7C1%uF7BF%uF7A3%uF7F0%uF7A7%uD17B%uF7BA%uF7B1%uF79D%uF7EC%uF7A4%uF7A3%uF7B7%uF7B2%uF792%uD1B5%uF79C%uF79F%uF7B0%uF7AE%uF78F%uF7DD%uF79A%uF798%uF7A9%uD17B%uF787%uF7D9%uF794%uF794%uF7A4%uF791%uF785%uF7D2%uF789%uD15D%uF79A%uF79E%uF77F%uF7CE%uF786%uF786%uF786%uF784%uF774%uD197%uF77E%uF782%uF780%uF783%uF771%uF7BF%uF77E%uF780%uF78B%uD149%uF769%uF7BB%uF776%uF777%uF772%uF776%uF767%uF7B4%uF76B%uD13F%uF77E%uF770%uF761%uF7B0%uF768%uF767%uF77B%uF768%uF756%uD179%uF760%uF764%uF762%uF762%uF753%uF7A1%uF75E%uF75C%uF76B%uD133%uF74B%uF79D%uF758%uF758%uF767%uF75B%uF749%uF796%uF74D%uD122%uF74C%uF752%uF743%uF792%uF74A%uF74A%uF74A%uF758%uF738%uD15B%uF742%uF745%uF757%uF758%uF735%uF783%uF742%uF745%uF73C%uD114%uF72D%uF77F%uF73A%uF73B%uF736%uF747%uF72B%uF778%uF72F%uD103%uF741%uF744%uF725%uF774%uF72C%uF72C%uF72C%uF73A%uF71A%uD13D%uF724%uF728%uF726%uF739%uF717%uF765%uF722%uF720%uF72F%uD0EF%uF70F%uF761%uF71C%uF71D%uF719%uF716%uF70D%uF75A%uF711%uD0E6%uF711%uF714%uF707%uF756%uF70E%uF70D%uF722%uF70F%uF6FC%uD11F%uF706%uF70A%uF70A%uF70F%uF6F9%uF747%uF706%uF709%uF6FE%uD0D0%uF6F1%uF743%uF6FE%uF6FE%uF70F%uF6FD%uF6EF%uF73C%uF6F3%uD0C7%uF707%uF6F6%uF6E9%uF738%uF6F0%uF6EF%uF705%uF6F1%uF6DE%uD101%uF6E8%uF6EB%uF6FE%uF6F1%uF6DB%uF729%uF6E6%uF6E5%uF6E1%uD0C4%uF6D3%uF725%uF6E0%uF6E0%uF6F1%uF6EB%uF6D1%uF71E%uF6D5%uD0A9%uF6E9%uF6EA%uF6CB%uF71A%uF6D2%uF6D1%uF6E7%uF6E2%uF6C0%uD0E3%uF6CA%uF6CD%uF6E2%uF6CE%uF6BD%uF70B%uF6CA%uF6CD%uF6C1%uD0AA%uF6B5%uF707%uF6C2%uF6C3%uF6C1%uF6BF%uF6B3%uF700%uF6B7%uD08B%uF6CB%uF6CB%uF6AD%uF6FC%uF6B4%uF6B3%uF6C9%uF6C5%uF6A2%uD0C5%uF6AC%uF6AF%uF6C3%uF6C1%uF69F%uF6ED%uF6AA%uF6A8%uF6B9%uD078%uF697%uF6E9%uF6A4%uF6A4%uF6B5%uF6A5%uF695%uF6E2%uF699%uD06E%uF69A%uF69D%uF68F%uF6DE%uF696%uF695%uF6AC%uF696%uF684%uD0A7%uF68E%uF691%uF6A5%uF6A2%uF681%uF6CF%uF68E%uF691%uF68A%uD05F%uF679%uF6CB%uF686%uF686%uF698%uF692%uF677%uF6C4%uF67B%uD04F%uF68F%uF68E%uF671%uF6C0%uF678%uF678%uF67A%uF67E%uF666%uD089%uF670%uF673%uF688%uF678%uF663%uF6B1%uF66E%uF66C%uF67C%uD050%uF65B%uF6AD%uF668%uF669%uF666%uF678%uF659%uF6A6%uF65D%uD032%uF65C%uF65F%uF653%uF6A2%uF65A%uF659%uF670%uF659%uF648%uD06B%uF652%uF656%uF657%uF657%uF645%uF693%uF652%uF655%uF64C%uD022%uF63D%uF68F%uF64A%uF64A%uF65C%uF64B%uF63B%uF688%uF63F%uD014%uF642%uF645%uF635%uF684%uF63C%uF63C%uF63C%uF639%uF62A%uD04D%uF634%uF638%uF636%uF637%uF627%uF675%uF632%uF631%uF62B%uD002%uF61F%uF671%uF62C%uF62D%uF628%uF638%uF61D%uF66A%uF621%uCFF5%uF636%uF62B%uF617%uF666%uF61E%uF61E%uF622%uF62E%uF60C%uD02F%uF616%uF61A%uF618%uF629%uF609%uF657%uF616%uF619%uF610%uCFE9%uF601%uF653%uF60E%uF60F%uF60A%uF61B%uF5FF%uF64C%uF603%uCFD8%uF604%uF604%uF5F9%uF648%uF600%uF5FF%uF616%uF613%uF5EE%uD011%uF5F8%uF5FC%uF5FF%uF5F9%uF5EB%uF639%uF5F6%uF5F5%uF5EF%uCFD7%uF5E3%uF635%uF5F0%uF5F1%uF5ED%uF5EB%uF5E1%uF62E%uF5E5%uCFBA%uF5E4%uF5FB%uF5DB%uF62A%uF5E2%uF5E2%uF5E4%uF5E2%uF5D0%uCFF3%uF5DA%uF5DE%uF5DC%uF5EC%uF5CD%uF61B%uF5DA%uF5DD%uF5D9%uCFAB%uF5C5%uF617%uF5D2%uF5D3%uF5CF%uF5D4%uF5C3%uF610%uF5C7%uCF9C%uF5C7%uF5D9%uF5BD%uF60C%uF5C4%uF5C4%uF5C6%uF5D2%uF5B2%uCFD5%uF5BC%uF5C0%uF5BF%uF5D1%uF5AF%uF5FD%uF5BA%uF5B9%uF5B3%uCF9A%uF5A7%uF5F9%uF5B4%uF5B5%uF5B4%uF5C2%uF5A5%uF5F2%uF5A9%uCF7E%uF5AC%uF5BF%uF59F%uF5EE%uF5A6%uF5A6%uF5A7%uF5A3%uF594%uCFB7%uF59E%uF5A2%uF5A5%uF5A1%uF591%uF5DF%uF59E%uF5A1%uF59A%uCF6D%uF589%uF5DB%uF596%uF597%uF593%uF595%uF587%uF5D4%uF58B%uCF60%uF58F%uF58D%uF581%uF5D0%uF588%uF588%uF58D%uF589%uF576%uCF99%uF580%uF584%uF583%uF585%uF573%uF5C1%uF57E%uF57D%uF57C%uCF4F%uF56B%uF5BD%uF578%uF579%uF579%uF57A%uF569%uF5B6%uF56D%uCF42%uF56D%uF575%uF563%uF5B2%uF56A%uF56A%uF570%uF578%uF558%uCF7B%uF562%uF566%uF566%uF56C%uF555%uF5A3%uF562%uF565%uF55E%uCF33%uF54D%uF59F%uF55A%uF55B%uF558%uF565%uF54B%uF598%uF54F%uCF24%uF551%uF565%uF545%uF594%uF54C%uF54C%uF54D%uF55D%uF53A%uCF5D%uF544%uF548%uF54C%uF55A%uF537%uF585%uF542%uF541%uF53D%uCF21%uF52F%uF581%uF53C%uF53D%uF53A%uF54C%uF52D%uF57A%uF531%uCF06%uF532%uF546%uF527%uF576%uF52E%uF52E%uF531%uF532%uF51C%uCF3F%uF526%uF52A%uF52A%uF52F%uF519%uF567%uF526%uF529%uF52E%uCEF5%uF511%uF563%uF51E%uF51F%uF51D%uF51C%uF50F%uF55C%uF513%uCEE8%uF515%uF517%uF509%uF558%uF510%uF510%uF513%uF50F%uF4FE%uCF21%uF508%uF50C%uF50E%uF511%uF4FB%uF549%uF506%uF505%uF501%uCEE4%uF4F3%uF545%uF500%uF501%uF502%uF50D%uF4F1%uF53E%uF4F5%uCECA%uF4F7%uF4FD%uF4EB%uF53A%uF4F2%uF4F2%uF4F4%uF504%uF4E0%uCF03%uF4EA%uF4EE%uF4F3%uF4EC%uF4DD%uF52B%uF4EA%uF4ED%uF4EA%uCEC6%uF4D5%uF527%uF4E2%uF4E3%uF4E1%uF4DF%uF4D3%uF520%uF4D7%uCEAC%uF4DE%uF4D9%uF4CD%uF51C%uF4D4%uF4D4%uF4D7%uF4E6%uF4C2%uCEE5%uF4CC%uF4D0%uF4D2%uF4D1%uF4BF%uF50D%uF4CA%uF4C9%uF4C7%uCE96%uF4B7%uF509%uF4C4%uF4C5%uF4C4%uF4C1%uF4B5%uF502%uF4B9%uCE8E%uF4BB%uF4BF%uF4AF%uF4FE%uF4B6%uF4B6%uF4BD%uF4BA%uF4A4%uCEC7%uF4AE%uF4B2%uF4B7%uF4C0%uF4A1%uF4EF%uF4AE%uF4B1%uF4AB%uCE81%uF499%uF4EB%uF4A6%uF4A7%uF4A9%uF4B3%uF497%uF4E4%uF49B%uCE70%uF49E%uF4AF%uF491%uF4E0%uF498%uF498%uF49B%uF4A7%uF486%uCEA9%uF490%uF494%uF49A%uF4A4%uF483%uF4D1%uF48E%uF48D%uF48B%uCE6B%uF47B%uF4CD%uF488%uF489%uF488%uF496%uF479%uF4C6%uF47D%uCE52%uF480%uF490%uF473%uF4C2%uF47A%uF47A%uF47F%uF479%uF468%uCE8B%uF472%uF476%uF478%uF479%uF465%uF4B3%uF472%uF475%uF47C%uCE3F%uF45D%uF4AF%uF46A%uF46B%uF46B%uF466%uF45B%uF4A8%uF45F%uCE34%uF463%uF461%uF455%uF4A4%uF45C%uF45C%uF461%uF45A%uF44A%uCE6D%uF454%uF458%uF45C%uF45A%uF447%uF495%uF452%uF451%uF44F%uCE27%uF43F%uF491%uF44C%uF44D%uF451%uF458%uF43D%uF48A%uF441%uCE16%uF445%uF446%uF437%uF486%uF43E%uF43E%uF443%uF443%uF42C%uCE4F%uF436%uF43A%uF43D%uF44A%uF429%uF477%uF436%uF439%uF436%uCE00%uF421%uF473%uF42E%uF42F%uF42F%uF429%uF41F%uF46C%uF423%uCDF8%uF42A%uF439%uF419%uF468%uF420%uF420%uF428%uF42F%uF40E%uCE31%uF418%uF41C%uF41F%uF419%uF40B%uF459%uF416%uF415%uF418%uCDE4%uF403%uF455%uF410%uF411%uF415%uF40F%uF401%uF44E%uF405%uCDDA%uF409%uF409%uF3FB%uF44A%uF402%uF402%uF40B%uF404%uF3F0%uCE13%uF3FA%uF3FE%uF405%uF401%uF3ED%uF43B%uF3FA%uF3FD%uF3F9%uCDCB%uF3E5%uF437%uF3F2%uF3F3%uF3F7%uF3FE%uF3E3%uF430%uF3E7%uCDBC%uF3EC%uF3EE%uF3DD%uF42C%uF3E4%uF3E4%uF3E9%uF3EA%uF3D2%uCDF5%uF3DC%uF3E0%uF3EF%uF3EE%uF3CF%uF41D%uF3DA%uF3D9%uF3D9%uCDB7%uF3C7%uF419%uF3D4%uF3D5%uF3D7%uF3CF%uF3C5%uF412%uF3C9%uCD9E%uF3CE%uF3D2%uF3BF%uF40E%uF3C6%uF3C6%uF3CE%uF3C3%uF3B4%uCDD7%uF3BE%uF3C2%uF3C6%uF3C3%uF3B1%uF3FF%uF3BE%uF3C1%uF3CA%uCD89%uF3A9%uF3FB%uF3B6%uF3B7%uF3B9%uF3B0%uF3A7%uF3F4%uF3AB%uCD80%uF3B0%uF3C2%uF3A1%uF3F0%uF3A8%uF3A8%uF3AF%uF3A5%uF396%uCDB9%uF3A0%uF3A4%uF3A9%uF3A1%uF393%uF3E1%uF39E%uF39D%uF39D%uCD71%uF38B%uF3DD%uF398%uF399%uF3A6%uF39B%uF389%uF3D6%uF38D%uCD62%uF393%uF390%uF383%uF3D2%uF38A%uF38A%uF391%uF38D%uF378%uCD9B%uF382%uF386%uF38B%uF395%uF375%uF3C3%uF382%uF385%uF38A%uCD5F%uF36D%uF3BF%uF37A%uF37B%uF37C%uF38A%uF36B%uF3B8%uF36F%uCD44%uF380%uF384%uF365%uF3B4%uF36C%uF36C%uF373%uF371%uF35A%uCD7D%uF364%uF368%uF36D%uF376%uF357%uF3A5%uF362%uF361%uF362%uCD42%uF34F%uF3A1%uF35C%uF35D%uF361%uF359%uF34D%uF39A%uF351%uCD26%uF357%uF353%uF347%uF396%uF34E%uF34E%uF360%uF34E%uF33C%uCD5F%uF346%uF34A%uF35A%uF350%uF339%uF387%uF346%uF349%uF34E%uCD15%uF331%uF383%uF33E%uF33F%uF34C%uF341%uF32F%uF37C%uF333%uCD08%uF33A%uF33B%uF329%uF378%uF330%uF330%uF337%uF334%uF31E%uCD41%uF328%uF32C%uF33C%uF331%uF31B%uF369%uF326%uF325%uF327%uCCFB%uF313%uF365%uF320%uF321%uF323%uF32E%uF311%uF35E%uF315%uCCEA%uF326%uF328%uF30B%uF35A%uF312%uF312%uF31B%uF30F%uF300%uCD23%uF30A%uF30E%uF314%uF30D%uF2FD%uF34B%uF30A%uF30D%uF316%uCCEA%uF2F5%uF347%uF302%uF303%uF307%uF301%uF2F3%uF340%uF2F7%uCCCC%uF2FE%uF2F9%uF2ED%uF33C%uF2F4%uF2F4%uF308%uF2F2%uF2E2%uCD05%uF2EC%uF2F0%uF2F6%uF301%uF2DF%uF32D%uF2EA%uF2E9%uF2EC%uCCB7%uF2D7%uF329%uF2E4%uF2E5%uF2E9%uF2E2%uF2D5%uF322%uF2D9%uCCAE%uF2E9%uF2DB%uF2CF%uF31E%uF2D6%uF2D6%uF2DE%uF2DB%uF2C4%uCCE7%uF2CE%uF2D2%uF2E4%uF2E2%uF2C1%uF30F%uF2CE%uF2D1%uF2D8%uCC9E%uF2B9%uF30B%uF2C6%uF2C7%uF2CB%uF2D6%uF2B7%uF304%uF2BB%uCC90%uF2C3%uF2CE%uF2B1%uF300%uF2B8%uF2B8%uF2C9%uF2C7%uF2A6%uCCC9%uF2B0%uF2B4%uF2BA%uF2C4%uF2A3%uF2F1%uF2AE%uF2AD%uF2BB%uCC90%uF29B%uF2ED%uF2A8%uF2A9%uF2AD%uF2B5%uF299%uF2E6%uF29D%uCC72%uF2A5%uF2B0%uF293%uF2E2%uF29A%uF29A%uF2A3%uF2AD%uF288%uCCAB%uF292%uF296%uF2A6%uF295%uF285%uF2D3%uF292%uF295%uF29C%uCC5F%uF27D%uF2CF%uF28A%uF28B%uF29A%uF28B%uF27B%uF2C8%uF27F%uCC54%uF28F%uF288%uF275%uF2C4%uF27C%uF27C%uF285%uF27E%uF26A%uCC8D%uF274%uF278%uF28A%uF27B%uF267%uF2B5%uF272%uF271%uF27F%uCC46%uF25F%uF2B1%uF26C%uF26D%uF271%uF278%uF25D%uF2AA%uF261%uCC36%uF274%uF26B%uF257%uF2A6%uF25E%uF25E%uF26F%uF271%uF24C%uCC6F%uF256%uF25A%uF269%uF257%uF249%uF297%uF256%uF25A%uF24D%uCC35%uF241%uF293%uF24E%uF24F%uF25C%uF248%uF23F%uF28C%uF243%uCC18%uF24B%uF25A%uF239%uF288%uF240%uF240%uF255%uF23D%uF22E%uCC51%uF238%uF23C%uF24B%uF24B%uF22B%uF279%uF236%uF235%uF240%uCC05%uF223%uF275%uF230%uF231%uF242%uF22F%uF221%uF26E%uF225%uCBFA%uF235%uF23B%uF21B%uF26A%uF222%uF222%uF234%uF221%uF210%uCC33%uF21A%uF21E%uF22E%uF222%uF20D%uF25B%uF21A%uF21D%uF227%uCBEA%uF205%uF257%uF212%uF213%uF21F%uF21E%uF203%uF250%uF207%uCBDC%uF21C%uF211%uF1FD%uF24C%uF204%uF204%uF216%uF205%uF1F2%uCC15%uF1FC%uF200%uF210%uF203%uF1EF%uF23D%uF1FA%uF1F9%uF205%uCBD8%uF1E7%uF239%uF1F4%uF1F5%uF203%uF1EF%uF1E5%uF232%uF1E9%uCBBE%uF1F9%uF1FE%uF1DF%uF22E%uF1E6%uF1E7%uF1E6%uF1E3%uF1D4%uCBF7%uF1DE%uF1E2%uF1F2%uF1F5%uF1D1%uF21F%uF1DE%uF1E1%uF1EA%uCBBC%uF1C9%uF21B%uF1D6%uF1D7%uF1E5%uF1D3%uF1C7%uF214%uF1CB%uCBA0%uF1DD%uF1CD%uF1C1%uF210%uF1C8%uF1C8%uF1DA%uF1C8%uF1B6%uCBD9%uF1C0%uF1C5%uF1C2%uF1C5%uF1B3%uF201%uF1BE%uF1BD%uF1CA%uCB8E%uF1AB%uF1FD%uF1B8%uF1B9%uF1C7%uF1C4%uF1A9%uF1F6%uF1AD%uCB82%uF1BF%uF1B2%uF1A3%uF1F2%uF1AA%uF1AA%uF1BD%uF1AC%uF198%uCBBB%uF1A2%uF1A6%uF1B6%uF1B8%uF195%uF1E3%uF1A2%uF1A6%uF19B%uCB7F%uF18D%uF1DF%uF19A%uF19B%uF1AC%uF1A8%uF18B%uF1D8%uF18F%uCB64%uF1A0%uF1A4%uF185%uF1D4%uF18C%uF18C%uF1A2%uF19E%uF17A%uCB9D%uF184%uF188%uF199%uF196%uF177%uF1C5%uF182%uF181%uF18E%uCB4F%uF16F%uF1C1%uF17C%uF17E%uF179%uF179%uF16D%uF1BA%uF171%uCB46%uF183%uF185%uF167%uF1B6%uF16E%uF16E%uF182%uF16B%uF15C%uCB7F%uF166%uF16A%uF17C%uF16C%uF159%uF1A7%uF166%uF16A%uF15E%uCB31%uF151%uF1A3%uF15E%uF15F%uF16D%uF161%uF14F%uF19C%uF153%uCB29%uF153%uF15B%uF149%uF198%uF150%uF150%uF164%uF14F%uF13E%uCB61%uF148%uF14C%uF15E%uF14D%uF13B%uF189%uF146%uF145%uF153%uCB1B%uF133%uF185%uF140%uF141%uF150%uF14D%uF131%uF17E%uF135%uCB0A%uF147%uF148%uF12B%uF17A%uF132%uF133%uF133%uF144%uF120%uCB43%uF12A%uF12E%uF140%uF13F%uF11D%uF16B%uF12A%uF12E%uF121%uCB06%uF115%uF167%uF122%uF123%uF133%uF11D%uF113%uF160%uF117%uCAEC%uF12C%uF118%uF10D%uF15C%uF114%uF114%uF128%uF112%uF102%uCB25%uF10C%uF111%uF110%uF10F%uF0FF%uF14D%uF10A%uF109%uF118%uCAD6%uF0F7%uF149%uF104%uF105%uF115%uF101%uF0F5%uF142%uF0F9%uCACE%uF10D%uF0FD%uF0EF%uF13E%uF0F6%uF0F6%uF10B%uF0F6%uF0E4%uCB07%uF0EE%uF0F2%uF104%uF102%uF0E1%uF12F%uF0EE%uF0F2%uF0EA%uCAC1%uF0D9%uF12B%uF0E6%uF0E7%uF0F7%uF0E8%uF0D7%uF124%uF0DB%uCAB0%uF0EF%uF0E3%uF0D1%uF120%uF0D8%uF0D8%uF0ED%uF0DE%uF0C6%uCAE9%uF0D0%uF0D4%uF0E8%uF0DA")))))), function () {
+//			console.log('start!');
+			if(to_render == 0){
+				init("");
+			}
+			start();
+		});
+		jwerty.key('esc', function () {
+			if(to_render) end();
+		});
+</script>
+
+

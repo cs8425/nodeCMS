@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Standard Meta -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title><%= sname %> - 設定最新消息</title>
+
+  <link rel="stylesheet" type="text/css" href="/public/css/semantic.css">
+
+  <script src="/public/js/jquery-1.11.1.js"></script>
+  <script src="/public/js/jquery.address.js"></script>
+  <script src="/public/js/semantic.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="/public/css/main.css">
+  <script src="/public/js/main.js"></script>
+</head>
+<body>
+<% include list %>
+<form id="data2" method="post">
+	<div class="ui segment">
+		<div class="ui form column">
+			<div class="ui segment">
+<table class="ui five column table segment">
+	<thead>
+		<tr><th><div class="circular ui button green" onClick="javascript:add();"><i class="add sign icon"></i>新增</div></th>
+		<th>Title</th>
+		<th>隱藏</th>
+		<th>內容</th>
+	</tr></thead>
+	<tbody id="data-list">
+<% for(var id in data.list){ %>
+	<tr id="<%= id %>">
+		<input type="hidden" id="<%= id %>-org" name="<%= id %>-org" value="<%= data.list[id].title %>">
+		<td class="dragHandle"><% if(id != 'index'){ %><div class="circular ui button red" onClick="javascript:rm(this);"><i class="remove icon"></i>刪除</div><% } %></td>
+				<td><input type="text" id="<%= id %>-name" name="<%= id %>-name" value="<%= data.list[id].title %>" style="width:100%"></td>
+				<td><label><input type="radio" name="<%= id %>-hide" value="true" <% if(data.list[id].hide == "true"){ %> checked <% } %>>Y</label><label><input type="radio" name="<%= id %>-hide" value="false" <% if(data.list[id].hide != "true"){ %> checked <% } %>>N</label></td>
+				<td><input type="text" id="<%= id %>-data" name="<%= id %>-data" value="<%= data.list[id].data %>" style="width:100%"></td>
+	</tr>
+<% } %>
+	</tbody>
+</table>
+			<button type="button" class="ui button blue" onClick="savelist();"><i class="layout save icon"></i>存檔</button>
+			</div>
+		</div>
+	</div>
+</form>
+<div id="show" class="ui modal">
+  <i class="close icon"></i>
+  <div class="header">
+  </div>
+  <div class="content">
+  </div>
+</div>
+</body>
+<% include loginscript %>
+<script src="/public/js/jquery.tablednd.js"></script>
+<!-- <script src="/public/js/jquery-sortable-min.js"></script> -->
+<script type="text/javascript">
+		var id = 1;
+		function sortable() {
+			$j('#data-list').tableDnD({
+				onDrop: function(table, row) {
+					console.log(table);
+					/*var rows = $j(table);
+					var debugStr = "Row dropped was "+row.id+". New order: ";
+					for (var i=0; i<rows.length; i++) {
+						debugStr += rows[i].id+" ";
+					}
+					console.log(debugStr);*/
+				},
+				dragHandle: ".dragHandle"
+			});
+		}
+		$j(document).ready(function() {
+			sortable();
+		});
+		function add() {
+			var d = '<tr id="n' + id + '"><input type="hidden" id="n' + id + '-new" name="n' + id + '-new" value="new"><td class="dragHandle"><div class="circular ui button red" onClick="javascript:rm(this);"><i class="remove icon"></i>刪除</div></td><td><input type="text" id="n' + id + '-name" name="n' + id + '-name" style="width:100%"></td><td><label><input type="radio" name="n' + id + '-hide" value="true" >Y</label><label><input type="radio" name="n' + id + '-hide" value="false" checked>N</label></td><td><input type="text" id="n' + id + '-url" name="n' + id + '-url" style="width:100%"></td></tr>';
+			$j('#data-list').append(d);
+			sortable();
+			id++;
+		}
+		function rm(a) {
+			$j(a).parent().parent().remove();
+		}
+		function savelist() {
+			$j.ajax({
+				type: "POST",
+				url: window.location.pathname,
+				dataType: "json",
+				data: { title: $j('#title').val(), stitle: $j('#stitle').val(), nav: $j("#data2").serializeArray() },
+				async: false,
+				success: function(data) {
+					console.log(data);
+					//alert(data.status);
+					$j('#show .header').text('回應');
+					$j('#show .content').html(data.status);
+					$j('#show').modal('show');
+				}
+			});
+		}
+	</script>
+</html>
