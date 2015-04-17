@@ -3,7 +3,7 @@
 var fs = require('fs');
 var path = require('path');
 
-
+// copy form doT.js
 var doT = {
 	version: "1.0.3",
 	templateSettings: {
@@ -132,6 +132,25 @@ doT.template = function(tmpl, c, def) {
 		throw e;
 	}
 };
+
+doT.compile = function(tmpl, def) {
+	return doT.template(tmpl, null, def);
+};
+
+
+doT.templateSettings = {
+	evaluate:    /<%([\s\S]+?)%>/g,
+	interpolate: /<%-([\s\S]+?)%>/g,
+	encode:      /<%=([\s\S]+?)%>/g,
+	use:         /<%#([\s\S]+?)%>/g,
+	define:      /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,
+	varname: 'it',
+	strip: false,
+	append: true,
+	selfcontained: false
+};
+
+// add this to return string only
 doT.templateFn = function(tmpl, c, def) {
 	c = c || doT.templateSettings;
 	var cse = c.append ? startend.append : startend.split, needhtmlencode, sid = 0, indv,
@@ -175,30 +194,12 @@ doT.templateFn = function(tmpl, c, def) {
 
 	return [c.varname, str];
 };
-
-doT.compile = function(tmpl, def) {
-	return doT.template(tmpl, null, def);
-};
-
-
-doT.templateSettings = {
-	evaluate:    /<%([\s\S]+?)%>/g,
-	interpolate: /<%-([\s\S]+?)%>/g,
-	encode:      /<%=([\s\S]+?)%>/g,
-	use:         /<%#([\s\S]+?)%>/g,
-	define:      /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,
-	varname: 'it',
-	strip: false,
-	append: true,
-	selfcontained: false
-};
-
 	
 
 var defs = {};
 defs.loadfile = function(loadpath) {
 	var tmp = path.join(process.argv[2].replace(/\/[^\/]*$/, ''), loadpath);
-	return fs.readFileSync(tmp);
+	return fs.readFileSync(tmp);	// don't know how to this become sync
 };
 
 

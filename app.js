@@ -89,53 +89,14 @@ if (cluster.isMaster) {
 	app.use(bodyParser.json({limit: '50mb'}));
 	app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
 
-/*	app.engine('.html', require('ejs').__express);
-	app.set('views', __dirname + '/views');
-
-	app.set('view engine', 'html');*/
 
 	app.enable('etag') // use strong etags
 	app.set('etag', 'strong') // same
 
 	app.use('/', route.router);
 
-//	app.use('/', require('./script').router);
+//	app.use('/exec', require('./script').router);
 
-/*
-	app.get('/script/:jse', function(req, res, next){
-		var file = req.params.jse;
-		var worker = require('child_process').fork('js-worker.js', [file]);
-		var timeout = setTimeout(function() {
-			worker.kill();
-		}, 40*1000)
-		console.log('[main] worker #' + worker.pid + ' start', file);
-		worker.send({
-			'type': 'req.params',
-			'd': req.params
-		});
-
-		worker.on('disconnect', function() {
-			console.log('[main] worker #' + worker.pid + ' end', file);
-		});
-		worker.on('message', function(msg, data) {
-			//console.log('[main] worker #' + worker.pid + ' msg', msg);
-			switch(msg.t){
-				case 'log':
-					console.log.apply(null , msg.d);
-				break;
-				case 'end':
-					res.end(msg.d);
-				break;
-				case 'write':
-					res.write(msg.d);
-				break;
-				
-				default:
-
-			}
-		});
-	});
-*/
 
 	process.on('SIGTERM', function () {
 		console.log('Got SIGTERM. exit.');

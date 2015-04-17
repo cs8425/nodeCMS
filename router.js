@@ -64,18 +64,9 @@ console.log('key:', keys, req.body);
 router.route('/login').get(forceSSL, function(req, res, next){
 	var data = tool.getJSON();
 	//var url = req.params.url;
-	if (req.user){
+	if (req.session.user){
 		res.redirect('/');
 	}else{
-		/*res.render('login', {
-			url: 'login',
-			suburl: '',
-			navbar: data.navbar,
-			name: data.title,
-			sname: data.stitle,
-			user: req.session.user,
-			message: req.session.messages
-		});*/
 		render.render('login.html', {
 			url: 'login',
 			navbar: data.navbar,
@@ -111,14 +102,6 @@ router.route('/editor').get(forceSSL, function(req, res, next){
 	var data = tool.getJSON();
 	//var url = req.params.url;
 	//if (req.session.user){
-		/*res.render('editor', {
-			url: 'editor',
-			navbar: data.navbar,
-			name: data.title,
-			sname: data.stitle,
-			user: req.session.user,
-			message: req.session.messages
-		});*/
 		render.render('editor.html', {
 			url: 'editor',
 			navbar: data.navbar,
@@ -146,18 +129,6 @@ router.route(/^\/(.*)/).get(function(req, res, next){
 	if(data.url2page[url]){
 		var page_id = data.url2page[url];
 		if(data.pages[page_id].hide != 'true' || req.isAuthenticated()){
-			/*res.render('main', {
-				url: url,
-				suburl: '',
-				data: data.pages[page_id],
-				navbar: data.navbar,
-				name: data.title,
-				sname: data.stitle,
-				user: req.session.user,
-				news: data.news.list,
-				links: data.links.list,
-				message: req.session.messages,
-			});*/
 			render.render('main.html', {
 				url: url,
 				data: data.pages[page_id],

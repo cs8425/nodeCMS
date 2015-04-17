@@ -8,18 +8,10 @@ var exports = module.exports = {};
 var PATH = exports.path = './views';
 
 exports.render = function(name, data, done){
-	//var err = null
 	if(typeof compiled[name] === 'function'){
 		done(compiled[name](data));
 	}else{
-		/*fs.readFile(path.join(PATH, name), {encoding: 'utf8'},function(err, tmpl){
-			if(err) throw err;
-			compiled[name] = dot.template(tmpl, undefined, defs);
-			process.nextTick(function(){
-					done(compiled[name](data));
-			});
-		});*/
-		render_worker(name, data, done);
+		render_worker(name, data, done);	// don't know how to let compile with loadfile become sync, so just spawn a worker.
 	}
 }
 
